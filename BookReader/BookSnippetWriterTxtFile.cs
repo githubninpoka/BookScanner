@@ -18,7 +18,6 @@ public class BookSnippetWriterTxtFile : IWrite
         $"we read at character index {characterPosition} \n====\n" +
         $" {snippet}";
 
-        //TODO: Create a writer with an interface
         try
         {
             File.AppendAllText(_outputDestination, toSaveText);
