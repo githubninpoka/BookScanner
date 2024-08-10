@@ -1,4 +1,4 @@
-﻿namespace BookReader;
+﻿namespace BookScanner.Helpers;
 
 public static class Validator
 {
@@ -19,7 +19,7 @@ public static class Validator
         }
         return true;
     }
-    public static bool ValidateTitle(string title) 
+    public static bool ValidateTitle(string title)
     {
         if (title is null)
         {

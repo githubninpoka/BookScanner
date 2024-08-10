@@ -1,4 +1,5 @@
-﻿using BookReader.Interfaces;
+﻿using BookScanner.Interfaces;
+using BookScanner.Helpers;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using VersOne.Epub;
 
-namespace BookReader;
+namespace BookScanner;
 
 public class EpubBook : IBook
 {

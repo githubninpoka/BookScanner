@@ -1,4 +1,5 @@
-﻿namespace BookReader;
+﻿
+namespace BookScanner.Helpers;
 
 public static class FilesLister
 {

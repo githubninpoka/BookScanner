@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookReader.Enumerations
+namespace BookScanner.Enumerations
 {
     public enum FileExtensions
     {

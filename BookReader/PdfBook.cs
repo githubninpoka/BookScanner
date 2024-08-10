@@ -1,12 +1,13 @@
-﻿using BookReader.Interfaces;
+﻿using BookScanner.Interfaces;
 using System.Text.RegularExpressions;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
-using BookReader.Constants;
+using BookScanner.Constants;
 using System.Collections.Generic;
+using BookScanner.Helpers;
 
 
-namespace BookReader;
+namespace BookScanner;
 
 public class PdfBook : IBook
 {

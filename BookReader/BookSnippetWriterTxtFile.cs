@@ -1,32 +1,33 @@
-﻿using BookReader.Interfaces;
+﻿using BookScanner.Interfaces;
 
-namespace BookReader
+namespace BookScanner;
+
+public class BookSnippetWriterTxtFile : IWrite
 {
-    public class BookSnippetWriterTxtFile : IWrite
+    private string _outputDestination;
+    private IUserInteraction _userInteraction;
+    public BookSnippetWriterTxtFile(IUserInteraction userInteraction, string outputDestination)
     {
-        public IUserInteraction UserInteraction { get; set; }
-        public BookSnippetWriterTxtFile(IUserInteraction userInteraction)
-        {
-            UserInteraction = userInteraction;
-        }
-        public bool Write(string filePath, string title, string author, int pages, int characterPosition, string snippet)
-        {
-            string toSaveText = "\n" + new string('=', 40) + $"\nIn the book {filePath} \n" +
-            $"titled {title} \nby {author} \nwith {pages} pages \n" +
-            $"we read at character index {characterPosition} \n====\n" +
-            $" {snippet}";
+        _userInteraction = userInteraction;
+        _outputDestination = outputDestination;
+    }
+    public bool Write(string filePath, string title, string author, int pages, int characterPosition, string snippet)
+    {
+        string toSaveText = "\n" + new string('=', 40) + $"\nIn the book {filePath} \n" +
+        $"titled {title} \nby {author} \nwith {pages} pages \n" +
+        $"we read at character index {characterPosition} \n====\n" +
+        $" {snippet}";
 
-            //TODO: Create a writer with an interface
-            try
-            {
-                File.AppendAllText(Constants.Constants.DEFAULT_OUTPUT_TXT_FILE, toSaveText);
-            }
-            catch (IOException ex)
-            {
-                UserInteraction.CommunicateToUser($"Exception while writing to file: {ex.Message}");
-                return false;
-            }
-            return true;
+        //TODO: Create a writer with an interface
+        try
+        {
+            File.AppendAllText(_outputDestination, toSaveText);
         }
+        catch (IOException ex)
+        {
+            _userInteraction.CommunicateToUser($"Exception while writing to file: {ex.Message}");
+            return false;
+        }
+        return true;
     }
 }

@@ -1,6 +1,7 @@
-﻿using VersOne.Epub;
+﻿using BookScanner.Helpers;
+using VersOne.Epub;
 
-namespace BookReader;
+namespace BookScanner;
 
 public static class EpubMetadataDelver
 {
