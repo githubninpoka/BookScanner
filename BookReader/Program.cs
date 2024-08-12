@@ -1,5 +1,6 @@
 ﻿using BookScanner.Interfaces;
 using BookScanner.UserInteraction;
+using BookScanner.Enumerations;
 using BookScanner.Helpers;
 using System;
 using System.Collections.Generic;
@@ -47,7 +48,7 @@ internal class Program
             
             IBook bookScanner;
             string fileExt = Path.GetExtension(filePath).ToLower();
-            if (fileExt == "." + Enumerations.FileExtensions.epub.ToString())
+            if (fileExt == "." + FileExtensions.epub.ToString())
             {
                 bookScanner = new EpubBook(filePath, regex, _userInteraction);
             }

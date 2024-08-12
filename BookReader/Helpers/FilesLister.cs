@@ -1,4 +1,5 @@
-﻿
+﻿using BookScanner.Enumerations;
+
 namespace BookScanner.Helpers;
 
 public static class FilesLister
@@ -19,7 +20,7 @@ public static class FilesLister
             {
                 string fileExt = Path.GetExtension(filePath);
                 fileExt = fileExt.ToLower();
-                foreach (var fileExtensionEnum in Enum.GetValues(typeof(Enumerations.FileExtensions)))
+                foreach (var fileExtensionEnum in Enum.GetValues(typeof(FileExtensions)))
                 {
                     if ("." + fileExtensionEnum.ToString() == fileExt)
                     {
