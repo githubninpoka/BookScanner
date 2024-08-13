@@ -67,10 +67,13 @@ public class EpubBook : IBook
         int? numberOfPages = null;
         try
         {
-            using EpubBookRef bookReference = EpubReader.OpenBook(filePath);
-            authors = EpubMetadataDelver.GetAuthors(bookReference);
-            titles = EpubMetadataDelver.GetTitles(bookReference);
-            numberOfPages = EpubMetadataDelver.GetNumberOfPages(bookReference);
+            using (EpubBookRef bookReference = EpubReader.OpenBook(filePath))
+            {
+                authors = EpubMetadataDelver.GetAuthors(bookReference);
+                titles = EpubMetadataDelver.GetTitles(bookReference);
+                numberOfPages = EpubMetadataDelver.GetNumberOfPages(bookReference);
+
+            }
         }
         catch (Exception ex)
         {
