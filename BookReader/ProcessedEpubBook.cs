@@ -12,7 +12,7 @@ using VersOne.Epub;
 
 namespace BookScanner;
 
-public class EpubBook : IBook
+public class ProcessedEpubBook : IProcessedBook
 {
     private IUserInteraction _userInteraction;
     private string _title = "Unknown title";
@@ -49,7 +49,7 @@ public class EpubBook : IBook
         private set { _matchesAndIndex = value; }
     }
 
-    public EpubBook(string filePath, Regex regex, IUserInteraction userInteraction)
+    public ProcessedEpubBook(string filePath, Regex regex, IUserInteraction userInteraction)
     {
         _userInteraction = userInteraction;
         PopulateBookText(filePath);

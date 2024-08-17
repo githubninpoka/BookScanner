@@ -9,7 +9,7 @@ using BookScanner.Helpers;
 
 namespace BookScanner;
 
-public class PdfBook : IBook
+public class ProcessedPdfBook : IProcessedBook
 {
     private IUserInteraction _userInteraction;
 
@@ -79,7 +79,7 @@ public class PdfBook : IBook
         }
     }
 
-    public PdfBook(string filePath, Regex regex, IUserInteraction userInteraction)
+    public ProcessedPdfBook(string filePath, Regex regex, IUserInteraction userInteraction)
     {
         _userInteraction = userInteraction;
         PopulateBookText(filePath);

@@ -2,7 +2,7 @@
 
 namespace BookScanner.Interfaces;
 
-public interface IBook
+public interface IProcessedBook
 {
     string Title { get; }
     string Author { get; }

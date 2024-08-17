@@ -1,6 +1,5 @@
 ﻿using BookScanner.Interfaces;
 using BookScanner.UserInteraction;
-using BookScanner.Enumerations;
 using BookScanner.Helpers;
 using System;
 using System.Collections.Generic;
@@ -9,6 +8,7 @@ using System.IO;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using VersOne.Epub.Schema;
+using System.Buffers;
 
 namespace BookScanner;
 
@@ -22,6 +22,7 @@ internal class Program
     // playing with regex.
     // the project uses constants and enums. have tried to avoid magic number anti pattern
     // found a use for null-coalescing operator
+    // made a bookProcessor for offloading some of the weight from Main
 
     static void Main(string[] args)
     {
@@ -41,29 +42,23 @@ internal class Program
         List<string> filePaths = FilesLister.GetFileNames(directoryToScan);
         _userInteraction.CommunicateToUser($"Total number of books to process: {filePaths.Count()}");
         int howManyBooksHaveBeenProcessed = 1;
+
+        
+
         foreach (var filePath in filePaths)
         {
             _userInteraction.CommunicateToUser($"Trying book {howManyBooksHaveBeenProcessed} out of {filePaths.Count} {filePath}");
             howManyBooksHaveBeenProcessed++;
+
+            // Task.Run?
+
+            BookProcessor bookProcessor = new BookProcessor(filePath,regex,writer,_userInteraction);
+            bookProcessor.Process();
             
-            IBook bookScanner;
-            string fileExt = Path.GetExtension(filePath).ToLower();
-            if (fileExt == "." + FileExtensions.epub.ToString())
-            {
-                bookScanner = new EpubBook(filePath, regex, _userInteraction);
-            }
-            else
-            {
-                bookScanner = new PdfBook(filePath, regex, _userInteraction);
-            }
-            if (bookScanner.HasMatchedSnippets())
-            {
-                foreach (KeyValuePair<int, string> snippet in bookScanner.MatchesAndIndex)
-                {
-                    writer.Write(filePath, bookScanner.Title, bookScanner.Author, bookScanner.Pages, snippet.Key, snippet.Value);
-                }
-            }
+
+            // Task end.
         }
+        // task.WaitWhenAll...
         sw.Stop();
         _userInteraction.CommunicateToUser($"Total processing time {sw.ElapsedMilliseconds / 1000}");
     }
