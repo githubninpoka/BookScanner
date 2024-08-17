@@ -6,6 +6,8 @@ public class BookSnippetWriterTxtFile : IWrite
 {
     private string _outputDestination;
     private IUserInteraction _userInteraction;
+
+    private object _lock = new object();
     public BookSnippetWriterTxtFile(IUserInteraction userInteraction, string outputDestination)
     {
         _userInteraction = userInteraction;
@@ -20,7 +22,10 @@ public class BookSnippetWriterTxtFile : IWrite
 
         try
         {
-            File.AppendAllText(_outputDestination, toSaveText);
+            lock (_lock)
+            {
+                File.AppendAllText(_outputDestination, toSaveText);
+            }
         }
         catch (IOException ex)
         {

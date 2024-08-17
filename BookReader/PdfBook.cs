@@ -151,6 +151,13 @@ public class PdfBook : IBook
                 foreach (Page page in document.GetPages())
                 {
                     BookText += " " + page.Text;
+                    //string pageText="";
+                    //foreach (Letter c in page.Letters)
+                    //{
+                    //    pageText = pageText + c.Value;
+                    //}
+                    //BookText += pageText;
+                    
                 }
             }
             BookText = StringCleaner.CleanString(BookText);
