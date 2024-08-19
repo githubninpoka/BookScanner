@@ -134,7 +134,6 @@ public class ProcessedEpubBook : IProcessedBook
     {
         try
         {
-            //Stopwatch sw = Stopwatch.StartNew();
             using (EpubBookRef book = EpubReader.OpenBook(filePath))
             {
                 IEnumerable<EpubLocalTextContentFileRef> contentReferences = book.GetReadingOrder();
@@ -150,7 +149,6 @@ public class ProcessedEpubBook : IProcessedBook
                 }
                 BookText = StringCleaner.CleanString(stringBuilder.ToString());
             }
-            //sw.Stop();
         }
         catch (Exception ex)
         {

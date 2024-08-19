@@ -1,11 +1,14 @@
 ﻿using BookScanner.Interfaces;
 using BookScanner.Enumerations;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace BookScanner;
 
 class BookProcessor
 {
+    private long timeSpent = 0;
+
     private IUserInteraction _userInteraction;
     private IWrite _writer;
     private IProcessedBook _processedBook;
@@ -40,6 +43,7 @@ class BookProcessor
                 _writer.Write(_filePath, _processedBook.Title, _processedBook.Author, _processedBook.Pages, snippet.Key, snippet.Value);
             }
         }
+
     }
 }
 

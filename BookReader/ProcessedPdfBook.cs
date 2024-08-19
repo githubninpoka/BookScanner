@@ -114,6 +114,7 @@ public class ProcessedPdfBook : IProcessedBook
     {
         string currentSnippet = "";
         Match match = regex.Match(BookText);
+        
         while (match.Success)
         {
             int currentSnippetStartIndex = match.Index - Constants.Constants.READ_BEFORE_CHARACTERS;
@@ -151,13 +152,6 @@ public class ProcessedPdfBook : IProcessedBook
                 foreach (Page page in document.GetPages())
                 {
                     BookText += " " + page.Text;
-                    //string pageText="";
-                    //foreach (Letter c in page.Letters)
-                    //{
-                    //    pageText = pageText + c.Value;
-                    //}
-                    //BookText += pageText;
-                    
                 }
             }
             BookText = StringCleaner.CleanString(BookText);
