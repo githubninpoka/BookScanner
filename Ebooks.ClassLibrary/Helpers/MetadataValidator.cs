@@ -1,10 +1,14 @@
-﻿using VersOne.Epub.Schema;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using VersOne.Epub.Schema;
 
-namespace BookScanner.Helpers;
+namespace Ebooks.ClassLibrary.Helpers;
 
-public static class Validator
+public static class MetadataValidator
 {
-    // seems duplicate but isn't. The business logic for the validations will differ per type.
     public static bool ValidateAuthor(string author)
     {
         if (author is null)

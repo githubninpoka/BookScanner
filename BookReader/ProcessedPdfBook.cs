@@ -5,6 +5,7 @@ using UglyToad.PdfPig.Content;
 using BookScanner.Constants;
 using System.Collections.Generic;
 using BookScanner.Helpers;
+using System.Text;
 
 
 namespace BookScanner;
@@ -38,7 +39,7 @@ public class ProcessedPdfBook : IProcessedBook
         {
             return _author;
         }
-        set
+        private set
         {
             _author = value;
         }
@@ -49,7 +50,7 @@ public class ProcessedPdfBook : IProcessedBook
         {
             return _bookText;
         }
-        set
+        private set
         {
             _bookText = value;
         }
@@ -61,7 +62,7 @@ public class ProcessedPdfBook : IProcessedBook
         {
             return _pages;
         }
-        set
+        private set
         {
             _pages = value;
         }
@@ -114,7 +115,7 @@ public class ProcessedPdfBook : IProcessedBook
     {
         string currentSnippet = "";
         Match match = regex.Match(BookText);
-        
+
         while (match.Success)
         {
             int currentSnippetStartIndex = match.Index - Constants.Constants.READ_BEFORE_CHARACTERS;
@@ -145,16 +146,17 @@ public class ProcessedPdfBook : IProcessedBook
 
     private void PopulateBookText(string filePath)
     {
+        StringBuilder sb = new StringBuilder();
         try
         {
             using (PdfDocument document = PdfDocument.Open(filePath))
             {
                 foreach (Page page in document.GetPages())
                 {
-                    BookText += " " + page.Text;
+                    sb.Append(" " + page.Text);
                 }
             }
-            BookText = StringCleaner.CleanString(BookText);
+            BookText = StringCleaner.CleanString(sb.ToString());
         }
         catch (Exception ex)
         {
