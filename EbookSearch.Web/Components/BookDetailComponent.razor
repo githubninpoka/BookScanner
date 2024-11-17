@@ -1,0 +1,63 @@
+﻿@inject EbookRetriever EbookRetriever
+@inject ILogger<BookDetailComponent> Logger
+
+@if (!string.IsNullOrEmpty(BookOpenSearchId) && thisBook != null && thisBook.MatchedSnippets.Count > 0 )
+{
+    <div class="m-lg-3 m-sm-1 ">
+        <span class="text-muted">Fetching the entire book took: @_searchTime milliseconds. Scanning its contents took: @_snippetTime milliseconds. This book contains @thisBook.MatchedSnippets.Count matching sections.</span>
+        <span class="m-5 top-0 end-0 position-fixed" style="z-index:1;background-color:white"><a href="#" class="link-primary" @onclick="ToggleBookDetails"> @(HideBookDetails ? "Show" : "Hide") the Details <i class="fa fa-l @(HideBookDetails?"fa-angle-down":"fa-angle-up")"></i></a></span>
+    </div>
+    <ul class="list-group @(HideBookDetails?"d-none":"d-show")" >
+        <div class="position-relative w-100 vh-100 overflow-scroll">
+            <Virtualize @key="thisBook.MatchedSnippets" Items="thisBook.MatchedSnippets" Context="currentSnippet">
+                <li class="list-group-item">
+                    <div class="text-muted" style="border:thin dotted">
+                        <span style="border:thin">found at character position @currentSnippet.Key in the book @thisBook.FileName</span>
+                    </div>
+                    <div>@((MarkupString)currentSnippet.Value)</div>
+                </li>
+            </Virtualize>
+        </div>
+    </ul>
+}
+
+@code {
+
+    [Parameter]
+    public string BookOpenSearchId { get; set; } = "";
+
+    [Parameter]
+    public string? SearchTerm { get; set; }
+
+    private IMatchedEbook? thisBook = null;
+
+    private long _searchTime = 0;
+    private long _snippetTime = 0;
+
+    public bool HideBookDetails { get; set; } = false;
+
+    private void ToggleBookDetails()
+    {
+        HideBookDetails = !HideBookDetails;
+    }
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        HideBookDetails = false;
+        if (BookOpenSearchId != "")
+        {
+            thisBook = null;
+            var sw = Stopwatch.StartNew();
+            IMatchedEbook oneBook = await EbookRetriever.Retrieve(BookOpenSearchId);
+            sw.Stop();
+            _searchTime = sw.ElapsedMilliseconds;
+            sw.Restart();
+            oneBook.LoadMatches(SearchTerm);
+            oneBook.MarkMatches(SearchTerm);
+            sw.Stop();
+            _snippetTime = sw.ElapsedMilliseconds;
+            thisBook = oneBook;
+        }
+    }
+}

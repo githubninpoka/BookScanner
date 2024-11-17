@@ -1,4 +1,5 @@
-﻿using Ebooks.ClassLIbrary.Interfaces;
+﻿using Ebooks.ClassLibrary.Helpers;
+using Ebooks.ClassLIbrary.Interfaces;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,6 @@ public class PdfBook : IEbook
 
     public string Author { get; set; } = "";
 
-
     public int Pages { get; set; } = 0;
 
     public string Title { get; set; } = "";
@@ -29,6 +29,14 @@ public class PdfBook : IEbook
             return filePath;
         }
     }
+    public string FileName
+    {
+        get
+        {
+            return Path.GetFileName(FilePath);
+        }
+    }
+    public string MD5Hash { get; set; } = "";
     public string BookText { get; set; } = "";
 
     public PdfBook(string filePath, ILogger logger)
@@ -39,6 +47,7 @@ public class PdfBook : IEbook
 
     public void Populate()
     {
+        MD5Hash = Md5Functions.ReturnMd5(filePath);
         using PdfDocument document = PdfDocument.Open(filePath);
         if (Helpers.MetadataValidator.ValidateAuthor(document.Information.Author))
         {

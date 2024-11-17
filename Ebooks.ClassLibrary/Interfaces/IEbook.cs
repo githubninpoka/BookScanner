@@ -6,8 +6,9 @@ public interface IEbook
     string BookText { get; }
     int Pages { get; }
     string Title { get; }
-
     string FilePath { get;  }
+    string FileName { get; }
+    string MD5Hash { get; }
 
     void Populate();
 }

@@ -1,0 +1,81 @@
+﻿@inject ILogger<BookMetaDataListComponent> Logger
+@inject EBooksFinder ebooksFinder
+
+<div class="position-relative p-3">
+    @if (_ebookMetaDatas != null && _ebookMetaDatas.Count > 0)
+    {
+        <div class="shadow w-75 my-lg-2 my-sm-0">
+            <span> Number of books found: @_numberOfSearchResults and Search took: @_searchTime seconds</span>
+            <ul>
+                <Virtualize Items="_ebookMetaDatas" Context="ebook">
+                    <BookMetaDataComponent BookMeta="@ebook"
+                                           OnBookClicked="@HandleOnBookClicked" />
+                </Virtualize>
+            </ul>
+        </div>
+    }
+    else
+    {
+        <div class="row m-lg-5 m-sm-2 position-relative d-flex justify-content-center">
+            <div class="col-12 d-flex justify-content-center">
+                <span>@_informativeMessage <i class="@(_rotating?"fa-solid fa-cog fa-spin":"fa fa-terminal fa-sm fa-fade")" /></span>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private string _informativeMessage = "The rabbithole is waiting for you.  ";
+
+    private bool _rotating = false;
+
+    private List<IEbookMetaData>? _ebookMetaDatas = new();
+
+    private SearchParameters? _searchParameters = null;
+
+    private int _numberOfSearchResults = 0;
+
+    private int _searchTime = 0;
+
+    private Stopwatch sw = new Stopwatch();
+
+    [Parameter]
+    public SearchParameters SearchParameters
+    {
+        get { return _searchParameters; }
+        set { _searchParameters = value; }
+    }
+
+    [Parameter]
+    public EventCallback<string> OnBookIdReceived { get; set; }
+
+    async Task HandleOnBookClicked(string bookOpenSearchId)
+    {
+        await OnBookIdReceived.InvokeAsync(bookOpenSearchId);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrEmpty(_searchParameters.SingleSearchString))
+        {
+            _rotating = true;
+            sw.Start();
+            Logger.LogInformation("Starting search from the OnParametersSetAsync in the bookmetadatalist component");
+            _ebookMetaDatas?.Clear();
+            _informativeMessage = "Searching the library.";
+            (_numberOfSearchResults, _ebookMetaDatas) = await ebooksFinder.FindEBooksAsync(_searchParameters);
+            sw.Stop();
+            _searchTime = (int)sw.ElapsedMilliseconds / 1000;
+            sw.Reset();
+            if (_ebookMetaDatas == null || _ebookMetaDatas.Count == 0)
+            {
+                _informativeMessage = "No results found, try again..";
+                _rotating = false;
+            }
+        }
+        else
+        {
+            Logger.LogInformation("Search filter is empty in BookMetaDataListComponent");
+        }
+    }
+}

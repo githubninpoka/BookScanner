@@ -1,0 +1,49 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@inject ILogger<Search> Logger
+
+<div>
+
+    @if(_showIntro)
+    {
+        <IntroTextComponent />
+    }
+
+    <SearchComponent 
+        OnSearchToBePerformed="@InitiateSearch"
+    />
+    
+    <BookDetailComponent
+        BookOpenSearchId="@_bookOpenSearchId"
+        SearchTerm="@_searchParameters.SingleSearchString"
+    />
+
+    <BookMetaDataListComponent 
+        SearchParameters="@_searchParameters"
+        OnBookIdReceived="@HandleIncomingBookRequest"
+    />
+    
+</div>
+
+
+@code {
+    private bool _showIntro = true;
+
+    private SearchParameters _searchParameters = new();
+
+    private string _bookOpenSearchId = "";
+
+    private void InitiateSearch(SearchParameters searchParameters)
+    {
+        _searchParameters = searchParameters;
+        _showIntro = false;
+        Logger.LogInformation("Initiating Search for {var}", _searchParameters.SingleSearchString);
+    }
+
+    private void HandleIncomingBookRequest(string bookOpenSearchId)
+    {
+        _bookOpenSearchId = bookOpenSearchId;
+        Logger.LogInformation("in Search page, got an incoming bookRequest {var} ", _bookOpenSearchId);
+    }
+
+}

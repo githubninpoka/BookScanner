@@ -5,6 +5,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -30,6 +31,15 @@ public class EpubBook : IEbook
             return filePath;
         }
     }
+
+    public string FileName
+    {
+        get
+        {
+            return Path.GetFileName(FilePath);
+        }
+    }
+    public string MD5Hash { get; set; } = "";
     public string BookText { get; set; } = "";
 
     public EpubBook(string filePath, ILogger logger)
@@ -40,6 +50,7 @@ public class EpubBook : IEbook
 
     public void Populate()
     {
+        MD5Hash = Md5Functions.ReturnMd5(filePath);
         using EpubBookRef bookRef = EpubReader.OpenBook(filePath);
         Title = bookRef.Title;
         Author = bookRef.Author;

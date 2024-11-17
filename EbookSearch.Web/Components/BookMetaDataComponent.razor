@@ -1,0 +1,29 @@
+﻿@inject ILogger<BookMetaDataComponent> Logger
+
+@if (BookMeta != null)
+{
+    <li class="list-group-item border-1">
+        <div class="card" @onclick="@(() => BookCardClicked(BookMeta.OpenSearchId))">
+            <div class="card-body">
+                @BookMeta.FileName
+            </div>
+            <div class="card-footer">
+                <span class="text-muted fs-6">@BookMeta.FilePath</span>
+            </div>
+        </div>
+    </li>
+}
+
+@code {
+    [Parameter]
+    public IEbookMetaData? BookMeta { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnBookClicked { get; set; }
+
+    async Task BookCardClicked(string input)
+    {
+        Logger.LogInformation("User selected book card {var} ", input);
+        await OnBookClicked.InvokeAsync(input);
+    }
+}

@@ -5,11 +5,13 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookScanner", "BookReader\BookScanner.csproj", "{845351B8-99B6-4E20-81C8-A64E4E7C6F56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbooksIndexClassLibrary", "EbooksIndexClassLibrary\EbooksIndexClassLibrary.csproj", "{F747CB27-0702-4886-8398-BEB6C65C5E1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ebooks.ClassLibrary", "Ebooks.ClassLibrary\Ebooks.ClassLibrary.csproj", "{A801EFF3-F6CA-4AEA-BAFA-19C6F47140EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ebooks.ClassLibrary", "Ebooks.ClassLibrary\Ebooks.ClassLibrary.csproj", "{A801EFF3-F6CA-4AEA-BAFA-19C6F47140EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EbooksIndex.UI", "EbooksIndex.UI\EbooksIndex.UI.csproj", "{884B87EA-7BFC-44FE-9BCF-E7F1370FFE92}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbooksIndex.UI", "EbooksIndex.UI\EbooksIndex.UI.csproj", "{884B87EA-7BFC-44FE-9BCF-E7F1370FFE92}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EbooksIndex.ClassLibrary", "EbooksIndex.ClassLibrary\EbooksIndex.ClassLibrary.csproj", "{E07821AF-57D0-460B-8707-D0CCFB5B8CA3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EbookSearch.Web", "EbookSearch.Web\EbookSearch.Web.csproj", "{06B4633F-57B1-4566-90A3-3A62334E6A26}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +23,6 @@ Global
 		{845351B8-99B6-4E20-81C8-A64E4E7C6F56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{845351B8-99B6-4E20-81C8-A64E4E7C6F56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{845351B8-99B6-4E20-81C8-A64E4E7C6F56}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F747CB27-0702-4886-8398-BEB6C65C5E1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F747CB27-0702-4886-8398-BEB6C65C5E1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F747CB27-0702-4886-8398-BEB6C65C5E1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F747CB27-0702-4886-8398-BEB6C65C5E1A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A801EFF3-F6CA-4AEA-BAFA-19C6F47140EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A801EFF3-F6CA-4AEA-BAFA-19C6F47140EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A801EFF3-F6CA-4AEA-BAFA-19C6F47140EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +31,14 @@ Global
 		{884B87EA-7BFC-44FE-9BCF-E7F1370FFE92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{884B87EA-7BFC-44FE-9BCF-E7F1370FFE92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{884B87EA-7BFC-44FE-9BCF-E7F1370FFE92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E07821AF-57D0-460B-8707-D0CCFB5B8CA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E07821AF-57D0-460B-8707-D0CCFB5B8CA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E07821AF-57D0-460B-8707-D0CCFB5B8CA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E07821AF-57D0-460B-8707-D0CCFB5B8CA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06B4633F-57B1-4566-90A3-3A62334E6A26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06B4633F-57B1-4566-90A3-3A62334E6A26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06B4633F-57B1-4566-90A3-3A62334E6A26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06B4633F-57B1-4566-90A3-3A62334E6A26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

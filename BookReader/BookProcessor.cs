@@ -43,7 +43,6 @@ class BookProcessor
                 _writer.Write(_filePath, _processedBook.Title, _processedBook.Author, _processedBook.Pages, snippet.Key, snippet.Value);
             }
         }
-
     }
 }
 

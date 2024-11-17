@@ -13,15 +13,31 @@ public class BookFactory
     public static IEbook Create(string filePath, ILogger? logger)
     {
         string fileExtension = Path.GetExtension(filePath.ToLower());
-        switch(fileExtension)
+        switch (fileExtension)
         {
             case ".epub":
-                logger.Information("returning an instance of an epub book {var}", filePath);
-                return new EpubBook(filePath, logger.ForContext<PdfBook>());
+                try
+                {
+                    return new EpubBook(filePath, logger.ForContext<PdfBook>());
+                    logger.Information("returning an instance of an epub book {var}", filePath);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, "Error while trying to instantiate object {var}", filePath);
+                    return null;
+                }
                 break;
             case ".pdf":
-                logger.Information("returning an instance of a pdf book {var}", filePath);
-                return new PdfBook(filePath, logger.ForContext<PdfBook>());
+                try
+                {
+                    return new PdfBook(filePath, logger.ForContext<PdfBook>());
+                    logger.Information("returning an instance of a pdf book {var}", filePath);
+                }
+                catch(Exception ex)
+                {
+                    logger.Error(ex, "Error while trying to instantiate object {var}", filePath);
+                    return null;
+                }
                 break;
             default:
                 logger.Error("Error in {var} while trying to produce a book instance for {var2}", nameof(Create), filePath);

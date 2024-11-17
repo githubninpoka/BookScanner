@@ -1,0 +1,49 @@
+﻿
+<div class="m-1 pt-2 pb-5 position-relative">
+
+    <div class="position-absolute my-lg-2 top-50 start-50 translate-middle align-items-center d-flex row">
+        <div class="col-12 d-flex justify-content-center">
+            <input type="text"
+                   @bind-value="SearchParameters.SingleSearchString"
+                   @bind-value:event="oninput"
+                   placeholder="Search here"
+                   @onkeydown="SearchBoxEnterClicked"
+                   class="fs-3" />
+
+            <button type="button"
+                    @onclick="SearchButtonClicked"
+                    class="btn btn-primary">
+                <i class="fa fa-search fa-l">
+                </i>
+            </button>
+        </div>
+        <div class="col-12 d-flex justify-content-center">
+
+            <label class="mx-2">Search only in selected reference books? </label>
+            <input type="checkbox"
+                   @bind-value="SearchParameters.OnlyReference" />
+        </div>
+
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public SearchParameters SearchParameters { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<SearchParameters> OnSearchToBePerformed { get; set; }
+
+    private void SearchButtonClicked()
+    {
+        OnSearchToBePerformed.InvokeAsync(SearchParameters);
+    }
+
+    private void SearchBoxEnterClicked(KeyboardEventArgs k)
+    {
+        if (k.Key == "Enter" && (SearchParameters != null) && !string.IsNullOrEmpty(SearchParameters.SingleSearchString))
+        {
+            OnSearchToBePerformed.InvokeAsync(SearchParameters);
+        }
+    }
+}

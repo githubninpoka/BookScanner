@@ -1,6 +1,6 @@
 ﻿using Ebooks.ClassLibrary;
 using Ebooks.ClassLIbrary.Interfaces;
-using EbooksIndexClassLibrary;
+using EbooksIndex.ClassLibrary;
 using Microsoft.Extensions.Configuration;
 using OpenSearch.Client;
 using OpenSearch.Net;
@@ -26,7 +26,7 @@ internal class Program
         Log.Logger = new LoggerConfiguration()
             .ReadFrom.Configuration(configuration)
             .CreateLogger();
-        Log.Information("Does this work?");
+        
         logger = (Serilog.Core.Logger)Log.Logger;
 
         ConnectionSettings opensearchConnectionSettings;
@@ -55,6 +55,9 @@ internal class Program
 
         logger.Information("Configuration complete.");
         openSearchClient = new OpenSearchClient(opensearchConnectionSettings);
+
+        // I should introduce an extra method in the BookIndexer class to clean this up from Main.
+        // this bit does not belong in the Program. and once I switch UIs to Blazor or React, this needs to be done anyway.
         var existsResponse = await openSearchClient.Indices.ExistsAsync(openSearchDefaultIndex);
         if (!existsResponse.Exists)
         {
