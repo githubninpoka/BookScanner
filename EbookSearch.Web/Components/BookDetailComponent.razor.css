@@ -1,0 +1,24 @@
+﻿body {
+}
+
+.snippet {
+    background-color: black;
+    /*background-image: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.3));*/
+    background-image: url("images/snippetBackground.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    /*opacity: 0.3;*/
+    /*top: 0;
+    left: 0;
+    height:100%;
+    width:100%;*/
+
+
+    /*color: white;*/
+    color:black;
+}
+
+linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+url('https://images.freeimages.com/images/large-previews/48d/woodgrain-texture-1151631.jpg')

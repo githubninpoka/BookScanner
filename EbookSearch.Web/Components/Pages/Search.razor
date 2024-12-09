@@ -1,28 +1,34 @@
 ﻿@page "/"
 @rendermode InteractiveServer
 @inject ILogger<Search> Logger
+@inject NavigationManager NavigationManager
 
-<div>
+@* <div class="d-flex justify-content-center position-absolute top-0 start-0 min-vh-100">
+    <span style="border:solid;border-width:thin">x<br />y z</span>
+    </div> *@
+<div class="position-relative searchComponent justify-content-center" style="@(_showIntro?"margin-top:10%":"")">
 
     @if(_showIntro)
     {
         <IntroTextComponent />
     }
 
-    <SearchComponent 
-        OnSearchToBePerformed="@InitiateSearch"
+    <SearchComponent
+    OnSearchToBePerformed="@InitiateSearch"
     />
-    
+
     <BookDetailComponent
-        BookOpenSearchId="@_bookOpenSearchId"
-        SearchTerm="@_searchParameters.SingleSearchString"
+    BookOpenSearchId="@_bookOpenSearchId"
+    SearchTerm="@_searchParameters.SingleSearchString"
     />
 
     <BookMetaDataListComponent 
-        SearchParameters="@_searchParameters"
-        OnBookIdReceived="@HandleIncomingBookRequest"
+    SearchParameters="@_searchParameters"
+    OnBookIdReceived="@HandleIncomingBookRequest"
     />
-    
+
+    <button type="button" class="btn btn-outline-primary" @onclick="Navigate">move away to trigger a dispose</button>
+
 </div>
 
 
@@ -44,6 +50,11 @@
     {
         _bookOpenSearchId = bookOpenSearchId;
         Logger.LogInformation("in Search page, got an incoming bookRequest {var} ", _bookOpenSearchId);
+    }
+
+    private void Navigate()
+    {
+        NavigationManager.NavigateTo("/x");
     }
 
 }

@@ -2,22 +2,24 @@
 
 <PageTitle>The Librarian</PageTitle>
 
-<div class="page">
-    <!-- <div class="sidebar">
-        <NavMenu />
-    </div> -->
+@* <span style="color:white">before the page class</span> *@
 
-    <main>
-        <!--
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-        -->
-        <article class="content px-4">
+<div class="page vh-100">
+    <div class="backgroundimage">
+    </div>
+    @* <span style="color:white">before main</span> *@
+     <main >
+         @* <span style="color:white"> before the article</span> *@
+        <article class="content px-3 d-flex justify-content-center align-items-center">
+            
             @Body
+            
         </article>
+        @* <span style="color:white">after the article</span> *@
     </main>
+    @* <span style="color:white">after main</span> *@
 </div>
+@* <span style="color:white">after the page class</span> *@
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.

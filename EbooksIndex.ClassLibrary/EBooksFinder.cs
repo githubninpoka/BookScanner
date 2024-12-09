@@ -13,10 +13,9 @@ public class EBooksFinder
     // or loading matches
 
     private ILogger<EBooksFinder> _logger;
+    private OpenSearchClient _db;
 
     private List<IEbookMetaData> booksMetadata = new();
-
-    private OpenSearchClient _db;
 
     public EBooksFinder(
         OpenSearchAccess openSearchAccess,
@@ -26,14 +25,47 @@ public class EBooksFinder
         _logger = logger;
         _db = openSearchAccess.GetCLient();
     }
-    public async Task<(int, List<IEbookMetaData>)> FindEBooksAsync(SearchParameters searchParameters)
+    public async Task<(int, List<IEbookMetaData>)> FindEBooksAsync(SearchParameters searchParameters, CancellationToken cancellationToken)
     {
         _logger.LogDebug("first step in find ebooks async method");
-        _logger.LogInformation("Logging with Referencebooks set to {var}", searchParameters.OnlyReference);
+        _logger.LogInformation("Searching with Referencebooks set to {var}", searchParameters.OnlyReference);
+        _logger.LogInformation("Searching with Tarotbooks set to {var}", searchParameters.AlsoTarot);
         ISearchResponse<BookMetaData> searchResponse;
-        if (searchParameters.OnlyReference)
+        if (searchParameters.OnlyReference && searchParameters.AlsoTarot)
         {
-            _logger.LogInformation("calling OS with References");
+
+            _logger.LogInformation("calling OS with limited reach");
+            searchResponse = await _db.SearchAsync<BookMetaData>(s => s
+                .Query(q => q
+                    .Bool(b => b
+                        .Should(
+                            mu => mu.MatchPhrase(m => m.Field("filePath").Query("Tarot_enDigitaleTarots")),
+                            mu => mu.MatchPhrase(m => m.Field("filePath").Query("GoToReferenceBooks"))
+                            )
+                        .MinimumShouldMatch(1)
+                        .Must(
+                            mu => mu.MatchPhrase(m => m.Field("bookText").Query(searchParameters.SingleSearchString))
+                            )
+                        )
+                    )
+                .Source(sf => sf
+                    .Includes(i => i
+                        .Fields(
+                            f => f.Title,
+                            f => f.Pages,
+                            f => f.Author,
+                            f => f.FilePath,
+                            f => f.FileName
+                            )
+                )
+                )
+                .Take(Constants.Constants.OPENSEARCH_MAX_TAKE)
+            ,cancellationToken);
+
+        }
+        else if (searchParameters.OnlyReference && !searchParameters.AlsoTarot)
+        {
+            _logger.LogInformation("calling OS with limited reach");
             searchResponse = await _db.SearchAsync<BookMetaData>(s => s
                 .Query(q => q
                     .Bool(b => b
@@ -55,11 +87,39 @@ public class EBooksFinder
                 )
                 )
                 .Take(Constants.Constants.OPENSEARCH_MAX_TAKE)
-            );
+            ,cancellationToken);
+        }
+        else if (!searchParameters.OnlyReference && searchParameters.AlsoTarot)
+        {
+
+            _logger.LogInformation("calling OS with limited reach");
+            searchResponse = await _db.SearchAsync<BookMetaData>(s => s
+                .Query(q => q
+                    .Bool(b => b
+                        .Must(
+
+                            mu => mu.MatchPhrase(m => m.Field("filePath").Query("Tarot_enDigitaleTarots")),
+                            mu => mu.MatchPhrase(m => m.Field("bookText").Query(searchParameters.SingleSearchString))
+                            )
+                        )
+                    )
+                .Source(sf => sf
+                    .Includes(i => i
+                        .Fields(
+                            f => f.Title,
+                            f => f.Pages,
+                            f => f.Author,
+                            f => f.FilePath,
+                            f => f.FileName
+                            )
+                )
+                )
+                .Take(Constants.Constants.OPENSEARCH_MAX_TAKE)
+            ,cancellationToken);
         }
         else
         {
-            _logger.LogInformation("calling OS without References");
+            _logger.LogInformation("calling OS including everything");
             searchResponse = await _db.SearchAsync<BookMetaData>(s => s
                 .Query(q => q
                 .MatchPhrase(m => m.Field("bookText").Query(searchParameters.SingleSearchString))
@@ -76,11 +136,14 @@ public class EBooksFinder
                 )
                 )
                 .Take(Constants.Constants.OPENSEARCH_MAX_TAKE)
-            );
+            , cancellationToken);
         }
         if (!searchResponse.IsValid)
         {
             _logger.LogWarning("Search was not valid {var}", searchResponse.DebugInformation);
+            _logger.LogInformation("Did search terminate early: {var} ", searchResponse.TerminatedEarly);
+            _logger.LogInformation("Did search timeout: {var} ", searchResponse.TimedOut);
+            return (0, null);
         }
         else
         {
@@ -93,10 +156,10 @@ public class EBooksFinder
         {
             string id = item.Id;
             var doc = item.Source;
+
             doc.OpenSearchId = id;
             booksMetadata.Add(doc);
         }
-        //List<IEbookMetaData> returnMe = searchResponse.Documents.ToList<IEbookMetaData>();
         return ((int)searchResponse.HitsMetadata.Total.Value, booksMetadata);
     }
 }

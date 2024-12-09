@@ -1,12 +1,13 @@
-﻿@inject ILogger<BookMetaDataListComponent> Logger
+﻿@implements IDisposable
+@inject ILogger<BookMetaDataListComponent> Logger
 @inject EBooksFinder ebooksFinder
 
-<div class="position-relative p-3">
+<div class="position-relative d-flex p-3 justify-content-center">
     @if (_ebookMetaDatas != null && _ebookMetaDatas.Count > 0)
     {
-        <div class="shadow w-75 my-lg-2 my-sm-0">
-            <span> Number of books found: @_numberOfSearchResults and Search took: @_searchTime seconds</span>
-            <ul>
+        <div class="d-inline-block shadow w-75 my-lg-2 my-sm-0">
+            <span class="metalistinfo"> Number of books found: @_numberOfSearchResults and Search took: @_searchTime seconds</span>
+            <ul class="list-unstyled">
                 <Virtualize Items="_ebookMetaDatas" Context="ebook">
                     <BookMetaDataComponent BookMeta="@ebook"
                                            OnBookClicked="@HandleOnBookClicked" />
@@ -16,25 +17,22 @@
     }
     else
     {
-        <div class="row m-lg-5 m-sm-2 position-relative d-flex justify-content-center">
-            <div class="col-12 d-flex justify-content-center">
-                <span>@_informativeMessage <i class="@(_rotating?"fa-solid fa-cog fa-spin":"fa fa-terminal fa-sm fa-fade")" /></span>
+        <div class="position-relative justify-content-center d-inline-block fs-5">
+            <div class="d-flex justify-content-center align-items-center">
+                <div class="inline-block" style="width:20rem">@_informativeMessage </div> <i class="@(_rotating?"fa-solid fa-cog fa-spin":"fa fa-terminal fa-sm fa-fade")" />
+                @* <span><div class="" style="width:20rem">@_informativeMessage </div> <i class="@(_rotating?"fa-solid fa-cog fa-spin":"fa fa-terminal fa-sm fa-fade")" /></span> *@
             </div>
         </div>
     }
 </div>
 
 @code {
-    private string _informativeMessage = "The rabbithole is waiting for you.  ";
-
+    private string _informativeMessage = "Follow the white rabbit.   ";
     private bool _rotating = false;
 
     private List<IEbookMetaData>? _ebookMetaDatas = new();
-
-    private SearchParameters? _searchParameters = null;
-
+    private SearchParameters _searchParameters = new();
     private int _numberOfSearchResults = 0;
-
     private int _searchTime = 0;
 
     private Stopwatch sw = new Stopwatch();
@@ -45,6 +43,7 @@
         get { return _searchParameters; }
         set { _searchParameters = value; }
     }
+
 
     [Parameter]
     public EventCallback<string> OnBookIdReceived { get; set; }
@@ -58,15 +57,20 @@
     {
         if (!string.IsNullOrEmpty(_searchParameters.SingleSearchString))
         {
+            cancellationTokenSourceForAnimation.Cancel();
             _rotating = true;
-            sw.Start();
-            Logger.LogInformation("Starting search from the OnParametersSetAsync in the bookmetadatalist component");
-            _ebookMetaDatas?.Clear();
             _informativeMessage = "Searching the library.";
-            (_numberOfSearchResults, _ebookMetaDatas) = await ebooksFinder.FindEBooksAsync(_searchParameters);
+
+            CancellationTokenSource cancellationTokenSourceSearchTimeout = new();
+            TimeOutTimer(cancellationTokenSourceSearchTimeout);
+
+            sw.Start();
+            _ebookMetaDatas?.Clear();
+            (_numberOfSearchResults, _ebookMetaDatas) = await ebooksFinder.FindEBooksAsync(_searchParameters, cancellationTokenSourceSearchTimeout.Token);
             sw.Stop();
             _searchTime = (int)sw.ElapsedMilliseconds / 1000;
             sw.Reset();
+
             if (_ebookMetaDatas == null || _ebookMetaDatas.Count == 0)
             {
                 _informativeMessage = "No results found, try again..";
@@ -77,5 +81,63 @@
         {
             Logger.LogInformation("Search filter is empty in BookMetaDataListComponent");
         }
+    }
+
+    private async Task TimeOutTimer(CancellationTokenSource cts)
+    {
+        Timer timer = new Timer(CancelSearch, cts, 4000, Timeout.Infinite);
+    }
+
+    private void CancelSearch(object x)
+    {
+        if (_ebookMetaDatas is null || _ebookMetaDatas.Count == 0)
+        {
+            Logger.LogInformation("Cancelling the search after 4 seconds! Is OpenSearch active?");
+            CancellationTokenSource cancellationTokenSource = (CancellationTokenSource)x;
+            cancellationTokenSource.Cancel();
+        }
+    }
+
+    // add animated message
+    private PeriodicTimer timerForAnimation;
+    CancellationTokenSource cancellationTokenSourceForAnimation = new();
+
+    private static string[] messages =
+       {
+           "Follow the white rabbit.   ",
+           "Follow the white rabbit..  ",
+           "Follow the white rabbit... ",
+           "Follow the white rabbit...."
+    };
+    private int whichMessage = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        timerForAnimation = new PeriodicTimer(TimeSpan.FromMilliseconds(500));
+        AnimateTheWhiteRabbit();
+    }
+
+    private async Task AnimateTheWhiteRabbit()
+    {
+        while (await timerForAnimation.WaitForNextTickAsync(cancellationTokenSourceForAnimation.Token))
+        {
+            Logger.LogDebug("Status of token: {var}", cancellationTokenSourceForAnimation.Token.IsCancellationRequested);
+            _informativeMessage = messages[whichMessage];
+            StateHasChanged();
+            whichMessage++;
+            if (whichMessage >= messages.Length)
+            {
+                whichMessage = 0;
+            }
+        }
+        Logger.LogInformation("Ended the timer for updating the information message");
+    }
+    // animated message
+
+
+    public void Dispose()
+    {
+        Logger.LogInformation("Disposing of {var}",nameof(AnimateTheWhiteRabbit));
+        cancellationTokenSourceForAnimation.Cancel();        
     }
 }

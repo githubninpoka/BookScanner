@@ -1,0 +1,14 @@
+﻿body {
+}
+/* added by me 2024-11 */
+
+.librarianinput{
+    background-color: rgba(180,180,180,0.5);
+    border:none;
+    outline:none;
+    
+}
+.librarianbutton{
+    
+    right:0px;
+}

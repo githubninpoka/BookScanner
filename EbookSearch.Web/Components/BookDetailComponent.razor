@@ -3,9 +3,9 @@
 
 @if (!string.IsNullOrEmpty(BookOpenSearchId) && thisBook != null && thisBook.MatchedSnippets.Count > 0 )
 {
-    <div class="m-lg-3 m-sm-1 ">
-        <span class="text-muted">Fetching the entire book took: @_searchTime milliseconds. Scanning its contents took: @_snippetTime milliseconds. This book contains @thisBook.MatchedSnippets.Count matching sections.</span>
-        <span class="m-5 top-0 end-0 position-fixed" style="z-index:1;background-color:white"><a href="#" class="link-primary" @onclick="ToggleBookDetails"> @(HideBookDetails ? "Show" : "Hide") the Details <i class="fa fa-l @(HideBookDetails?"fa-angle-down":"fa-angle-up")"></i></a></span>
+    <div class="position-relative m-lg-3 m-sm-1 d-flex justify-content-center">
+        <span>Fetching the entire book took: @_searchTime milliseconds. Scanning its contents took: @_snippetTime milliseconds. This book contains @thisBook.MatchedSnippets.Count matching sections.</span>
+        <span class="m-5 top-0 end-0 position-absolute" style="z-index:1;background-color:white"><a href="#" class="link-primary" @onclick="ToggleBookDetails"> @(HideBookDetails ? "Show" : "Hide") the Details <i class="fa fa-l @(HideBookDetails?"fa-angle-down":"fa-angle-up")"></i></a></span>
     </div>
     <ul class="list-group @(HideBookDetails?"d-none":"d-show")" >
         <div class="position-relative w-100 vh-100 overflow-scroll">
@@ -14,7 +14,7 @@
                     <div class="text-muted" style="border:thin dotted">
                         <span style="border:thin">found at character position @currentSnippet.Key in the book @thisBook.FileName</span>
                     </div>
-                    <div>@((MarkupString)currentSnippet.Value)</div>
+                    <div class="snippet p-lg-1">@((MarkupString)currentSnippet.Value)</div>
                 </li>
             </Virtualize>
         </div>

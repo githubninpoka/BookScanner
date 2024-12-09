@@ -45,8 +45,7 @@ public class OpenSearchAccess
             opensearchConnectionSettings.BasicAuthentication(_openSearchUser, _openSearchPassword);
             opensearchConnectionSettings.DefaultIndex(_openSearchIndex);
             opensearchConnectionSettings.ServerCertificateValidationCallback((o, c, ch, er) => true);
-
-            opensearchConnectionSettings.RequestTimeout(TimeSpan.FromSeconds(5));
+            opensearchConnectionSettings.RequestTimeout(TimeSpan.FromSeconds(10));
             //opensearchConnectionSettings.EnableDebugMode();
             //opensearchConnectionSettings.OnRequestCompleted(callDetails =>
             //{

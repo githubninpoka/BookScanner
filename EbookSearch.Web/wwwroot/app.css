@@ -49,3 +49,20 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+/* added by me 2024-11 */
+
+/*div, main, article{
+    border: dotted;
+    border-color:white;
+    border-width:1px;
+}*/
+
+.searchComponent {
+    background-color: rgba(128, 128, 128, 0.8);
+    border-radius: 20px;
+    color: white;
+    display: inline-block;
+    padding: 20px;
+    position: relative;
+}

@@ -5,10 +5,10 @@
     <li class="list-group-item border-1">
         <div class="card" @onclick="@(() => BookCardClicked(BookMeta.OpenSearchId))">
             <div class="card-body">
-                @BookMeta.FileName
+                <i class="fa-solid fa-book"></i> <span class="fs-6">@titleToShow</span>
             </div>
             <div class="card-footer">
-                <span class="text-muted fs-6">@BookMeta.FilePath</span>
+                <span class="text-muted" style="font-size:0.6rem">@BookMeta.FilePath</span>
             </div>
         </div>
     </li>
@@ -18,6 +18,8 @@
     [Parameter]
     public IEbookMetaData? BookMeta { get; set; }
 
+    private string? titleToShow;
+
     [Parameter]
     public EventCallback<string> OnBookClicked { get; set; }
 
@@ -25,5 +27,11 @@
     {
         Logger.LogInformation("User selected book card {var} ", input);
         await OnBookClicked.InvokeAsync(input);
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        int extensionMarker = BookMeta.FileName.LastIndexOf('.');
+        titleToShow = BookMeta.FileName.Substring(0, extensionMarker);
+
     }
 }
