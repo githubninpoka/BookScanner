@@ -143,6 +143,7 @@ public class EBooksFinder
             _logger.LogWarning("Search was not valid {var}", searchResponse.DebugInformation);
             _logger.LogInformation("Did search terminate early: {var} ", searchResponse.TerminatedEarly);
             _logger.LogInformation("Did search timeout: {var} ", searchResponse.TimedOut);
+            _logger.LogInformation("Message? {var} ", searchResponse.OriginalException.Message);
             return (0, null);
         }
         else
@@ -160,6 +161,8 @@ public class EBooksFinder
             doc.OpenSearchId = id;
             booksMetadata.Add(doc);
         }
+        _logger.LogWarning("Search was valid {var}", searchResponse.DebugInformation);
+        _logger.LogInformation("OS search took {var} milliseconds", searchResponse.Took);
         return ((int)searchResponse.HitsMetadata.Total.Value, booksMetadata);
     }
 }

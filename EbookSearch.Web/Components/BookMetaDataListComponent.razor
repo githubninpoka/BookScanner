@@ -2,25 +2,25 @@
 @inject ILogger<BookMetaDataListComponent> Logger
 @inject EBooksFinder ebooksFinder
 
-<div class="position-relative d-flex p-3 justify-content-center">
+<div class="position-relative d-flex flex-column p-3 justify-content-center">
+    <span id="topoflist"></span>
     @if (_ebookMetaDatas != null && _ebookMetaDatas.Count > 0)
     {
-        <div class="d-inline-block shadow w-75 my-lg-2 my-sm-0">
+        <div class="my-lg-2 my-sm-0">
             <span class="metalistinfo"> Number of books found: @_numberOfSearchResults and Search took: @_searchTime seconds</span>
-            <ul class="list-unstyled">
+                <div>
                 <Virtualize Items="_ebookMetaDatas" Context="ebook">
                     <BookMetaDataComponent BookMeta="@ebook"
-                                           OnBookClicked="@HandleOnBookClicked" />
+                    OnBookClicked="@HandleOnBookClicked" />
                 </Virtualize>
-            </ul>
+            </div>
         </div>
     }
     else
     {
         <div class="position-relative justify-content-center d-inline-block fs-5">
-            <div class="d-flex justify-content-center align-items-center">
-                <div class="inline-block" style="width:20rem">@_informativeMessage </div> <i class="@(_rotating?"fa-solid fa-cog fa-spin":"fa fa-terminal fa-sm fa-fade")" />
-                @* <span><div class="" style="width:20rem">@_informativeMessage </div> <i class="@(_rotating?"fa-solid fa-cog fa-spin":"fa fa-terminal fa-sm fa-fade")" /></span> *@
+            <div class="d-inline-flex justify-content-center align-items-center">
+                <div style="width:15rem">@_informativeMessage  <i class="@(_rotating?"fa-solid fa-cog fa-spin":"")" /> </div>
             </div>
         </div>
     }
@@ -44,23 +44,32 @@
         set { _searchParameters = value; }
     }
 
-
     [Parameter]
     public EventCallback<string> OnBookIdReceived { get; set; }
+
+    [Parameter]
+    public bool DoSearch { get; set; } = true;
 
     async Task HandleOnBookClicked(string bookOpenSearchId)
     {
         await OnBookIdReceived.InvokeAsync(bookOpenSearchId);
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        timerForAnimation = new PeriodicTimer(TimeSpan.FromMilliseconds(500));
+        AnimateTheWhiteRabbit();
+    }
+
     protected override async Task OnParametersSetAsync()
     {
-        if (!string.IsNullOrEmpty(_searchParameters.SingleSearchString))
+        if (!string.IsNullOrEmpty(_searchParameters.SingleSearchString) && DoSearch)
         {
             cancellationTokenSourceForAnimation.Cancel();
             _rotating = true;
             _informativeMessage = "Searching the library.";
 
+            // this timer belongs more inside the ebooksFinder itself but for now it works.
             CancellationTokenSource cancellationTokenSourceSearchTimeout = new();
             TimeOutTimer(cancellationTokenSourceSearchTimeout);
 
@@ -79,20 +88,20 @@
         }
         else
         {
-            Logger.LogInformation("Search filter is empty in BookMetaDataListComponent");
+            Logger.LogInformation("Search filter is empty in {var}",nameof(BookMetaDataListComponent));
         }
     }
 
     private async Task TimeOutTimer(CancellationTokenSource cts)
     {
-        Timer timer = new Timer(CancelSearch, cts, 4000, Timeout.Infinite);
+        Timer timer = new Timer(CancelSearch, cts, 6000, Timeout.Infinite);
     }
 
     private void CancelSearch(object x)
     {
         if (_ebookMetaDatas is null || _ebookMetaDatas.Count == 0)
         {
-            Logger.LogInformation("Cancelling the search after 4 seconds! Is OpenSearch active?");
+            Logger.LogInformation("Cancelling the search after 6 seconds! Is OpenSearch active?");
             CancellationTokenSource cancellationTokenSource = (CancellationTokenSource)x;
             cancellationTokenSource.Cancel();
         }
@@ -111,11 +120,6 @@
     };
     private int whichMessage = 0;
 
-    protected override async Task OnInitializedAsync()
-    {
-        timerForAnimation = new PeriodicTimer(TimeSpan.FromMilliseconds(500));
-        AnimateTheWhiteRabbit();
-    }
 
     private async Task AnimateTheWhiteRabbit()
     {

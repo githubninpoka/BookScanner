@@ -3,10 +3,13 @@
 @inject ILogger<Search> Logger
 @inject NavigationManager NavigationManager
 
-@* <div class="d-flex justify-content-center position-absolute top-0 start-0 min-vh-100">
-    <span style="border:solid;border-width:thin">x<br />y z</span>
-    </div> *@
-<div class="position-relative searchComponent justify-content-center" style="@(_showIntro?"margin-top:10%":"")">
+<div class="d-flex row position-relative contentblock justify-content-center p-sm-3 p-1 
+                @((!string.IsNullOrWhiteSpace(_searchParameters.SingleSearchString)
+                    ?"col-12 col-md-11 col-lg-10 col-xl-9 col-xxl-8"
+                    :"col-12 col-sm-10 col-lg-6 col-xl-4"))" 
+style="@(_showIntro?"margin-top:10%":"")">
+
+    <span id="topofbody"></span>
 
     @if(_showIntro)
     {
@@ -21,13 +24,12 @@
     BookOpenSearchId="@_bookOpenSearchId"
     SearchTerm="@_searchParameters.SingleSearchString"
     />
-
+    
     <BookMetaDataListComponent 
     SearchParameters="@_searchParameters"
+    DoSearch="@_doSearch"
     OnBookIdReceived="@HandleIncomingBookRequest"
     />
-
-    <button type="button" class="btn btn-outline-primary" @onclick="Navigate">move away to trigger a dispose</button>
 
 </div>
 
@@ -35,21 +37,26 @@
 @code {
     private bool _showIntro = true;
 
-    private SearchParameters _searchParameters = new();
+    private bool _doSearch = true;
+
+    private SearchParameters _searchParameters =new();
 
     private string _bookOpenSearchId = "";
 
     private void InitiateSearch(SearchParameters searchParameters)
     {
         _searchParameters = searchParameters;
+        _doSearch = true;
         _showIntro = false;
-        Logger.LogInformation("Initiating Search for {var}", _searchParameters.SingleSearchString);
+        Logger.LogInformation("Search parameters were set to {var}, so that Components can pick it up", _searchParameters.SingleSearchString);
     }
 
     private void HandleIncomingBookRequest(string bookOpenSearchId)
     {
         _bookOpenSearchId = bookOpenSearchId;
-        Logger.LogInformation("in Search page, got an incoming bookRequest {var} ", _bookOpenSearchId);
+        _doSearch = false;
+        Logger.LogInformation("The Search page received an incoming bookRequest {var} from BookMetaData through BookMetaDataList ", _bookOpenSearchId);
+        NavigationManager.NavigateTo("#topofbody");
     }
 
     private void Navigate()

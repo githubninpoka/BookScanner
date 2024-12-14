@@ -9,14 +9,7 @@
     background-size: cover;
     background-position: center;
     position: relative;
-    /*opacity: 0.3;*/
-    /*top: 0;
-    left: 0;
-    height:100%;
-    width:100%;*/
-
-
-    /*color: white;*/
+    padding:0.3rem;
     color:black;
 }
 
