@@ -2,6 +2,7 @@
 @inject ILogger<BookDetailComponent> Logger
 @inject NavigationManager NavigationManager
 
+
 @if (!string.IsNullOrWhiteSpace(BookOpenSearchId) && thisBook != null && thisBook.MatchedSnippets.Count > 0)
 {
 
@@ -49,6 +50,7 @@
     private void CloseBook()
     {
         BookOpenSearchId = "";
+        thisBook = null;
         NavigationManager.NavigateTo($"#topoflist");
     }
 

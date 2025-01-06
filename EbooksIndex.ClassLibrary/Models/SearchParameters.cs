@@ -13,4 +13,6 @@ public class SearchParameters
     public bool OnlyReference { get; set; } = false;
 
     public bool AlsoTarot { get; set; } = false;
+
+    public bool FuzzySearch { get; set; }
 }

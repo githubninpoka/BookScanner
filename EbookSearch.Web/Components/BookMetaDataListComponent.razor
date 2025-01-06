@@ -18,7 +18,7 @@
     }
     else
     {
-        <div class="position-relative justify-content-center d-inline-block fs-5">
+        <div class="position-relative justify-content-center d-inline-flex fs-5">
             <div class="d-inline-flex justify-content-center align-items-center">
                 <div style="width:15rem">@_informativeMessage  <i class="@(_rotating?"fa-solid fa-cog fa-spin":"")" /> </div>
             </div>
@@ -70,6 +70,7 @@
             _informativeMessage = "Searching the library.";
 
             // this timer belongs more inside the ebooksFinder itself but for now it works.
+            // for next time I encounter this: the cancellationtokensource has a cancelafter method.
             CancellationTokenSource cancellationTokenSourceSearchTimeout = new();
             TimeOutTimer(cancellationTokenSourceSearchTimeout);
 

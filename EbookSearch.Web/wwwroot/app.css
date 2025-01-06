@@ -51,12 +51,7 @@ h1:focus {
 }
 
 /* added by me 2024-11 */
-/*
-div, main, article{
-    border: dotted;
-    border-color:white;
-    border-width:1px;
-}*/
+
 
 .contentblock {
     background-color: rgba(128, 128, 128, 0.8);

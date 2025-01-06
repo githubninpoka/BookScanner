@@ -2,5 +2,23 @@
 }
 
 .pointer {
-    cursor:pointer;
+    cursor: pointer;
 }
+
+.bookMetaData {
+}
+
+    .bookMetaData:hover {
+        border: thin;
+        border-radius: 5px;
+        box-shadow: 10px 10px 20px rgba(36, 36, 36, 0.5);
+        background-color: rgba(128, 128, 128,0.5);
+        padding: 10px;
+        transform: scale(1.1);
+    }
+    .bookMetaData:hover .metaTitle {
+        font-weight:400;
+    }
+    .bookMetaData:hover i{
+        font-size:2.5rem;
+    }

@@ -1,15 +1,21 @@
 ﻿@inject ILogger<BookMetaDataComponent> Logger
-@inject NavigationManager NavigationManager
 
 @if (BookMeta != null)
 {
     <hr />
-    <div class="mb-1 mt-0 pointer" @onclick="@(() => BookCardClicked(BookMeta.OpenSearchId))">
-        <div class="p-1">
-            <i class="fa-solid fa-book"></i> <span class="fs-6">@titleToShow</span>
-        </div>
-        <div class="d-inline p-1">
-            <span style="font-size:0.6rem">@BookMeta.FilePath</span>
+    <div class="mb-1 mt-0 pointer bookMetaData" @onclick="@(() => BookCardClicked(BookMeta.OpenSearchId))">
+        <div class="row">
+            <div class="d-none d-sm-block col-sm-1 align-content-center">
+                <i class="fa-solid fa-book fa-2x"></i>
+            </div>
+            <div class="col-sm-11" >
+                <div class="p-1 metaTitle">
+                    <span class="fs-6 ">@titleToShow</span>
+                </div>
+                <div class="d-inline p-1 metaFilePath">
+                    <span style="font-size:0.6rem">@BookMeta.FilePath</span>
+                </div>
+            </div>
         </div>
     </div>
 }
@@ -27,7 +33,7 @@
     {
         Logger.LogInformation("User selected book card {var} ", input);
         await OnBookClicked.InvokeAsync(input);
-        
+
     }
     protected override async Task OnParametersSetAsync()
     {

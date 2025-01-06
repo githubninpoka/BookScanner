@@ -117,6 +117,30 @@ public class EBooksFinder
                 .Take(Constants.Constants.OPENSEARCH_MAX_TAKE)
             ,cancellationToken);
         }
+        else if(searchParameters.FuzzySearch)
+        {
+            _logger.LogInformation("calling OS including everything fuzzy");
+            searchResponse = await _db.SearchAsync<BookMetaData>(s => s
+                .Query(q => q
+                .Match(m => m.Field("bookText")
+                .Query(searchParameters.SingleSearchString)
+                .Fuzziness(Fuzziness.EditDistance(2))
+                )
+                )
+                .Source(sf => sf
+                    .Includes(i => i
+                        .Fields(
+                            f => f.Title,
+                            f => f.Pages,
+                            f => f.Author,
+                            f => f.FilePath,
+                            f => f.FileName
+                            )
+                )
+                )
+                .Take(Constants.Constants.OPENSEARCH_MAX_TAKE)
+            , cancellationToken);
+        }
         else
         {
             _logger.LogInformation("calling OS including everything");

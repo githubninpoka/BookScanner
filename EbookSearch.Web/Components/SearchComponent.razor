@@ -33,6 +33,12 @@
                    @bind-value="SearchParameters.AlsoTarot" />
             <label class="mx-2">Limit search to tarot books? </label>
         </div>
+        <div class="d-inline-flex justify-content-start align-items-baseline fs-5 w-auto">
+
+            <input type="checkbox"
+                   @bind-value="SearchParameters.FuzzySearch" disabled/>
+            <label class="mx-2">Perform fuzzy search? </label>
+        </div>
     </div>
 </div>
 
