@@ -65,7 +65,9 @@
             sw.Stop();
             _searchTime = sw.ElapsedMilliseconds;
             sw.Restart();
-            oneBook.LoadMatches(SearchTerm);
+            //oneBook.LoadMatches(SearchTerm);
+            oneBook.LoadFuzzyMatches(SearchTerm);
+
             oneBook.MarkMatches(SearchTerm);
             sw.Stop();
             _snippetTime = sw.ElapsedMilliseconds;

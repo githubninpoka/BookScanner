@@ -1,4 +1,6 @@
 ﻿using EbooksIndex.ClassLibrary.Interfaces;
+using FuzzySharp;
+using FuzzySharp.Extractor;
 using System.Text.RegularExpressions;
 
 namespace EbooksIndex.ClassLibrary.Models;
@@ -17,6 +19,7 @@ public class MatchedEbook : IMatchedEbook
 
     public void LoadMatches(string searchString)
     {
+        // \b means to match a word boundary
         string regexString = $@"\b{searchString}\b";
         Regex regex = new Regex(regexString, RegexOptions.IgnoreCase);
 
@@ -61,5 +64,22 @@ public class MatchedEbook : IMatchedEbook
 
             MatchedSnippets[item.Key] = newSnippet ;
         }
+    }
+
+    public void LoadFuzzyMatches(string searchString)
+    {
+        // installed nuget package FuzzySharp for this.
+        // uninstall if it turns out to be a failing effort.
+        int cutOff = 91; // random number. will have to be moved to configuration
+        string currentSnippet = "";
+        string[] bookTextArray = BookText.Split(' ');
+        IEnumerable<ExtractedResult<string>> matches = Process.ExtractAll(searchString, bookTextArray, cutoff: cutOff);
+        foreach(ExtractedResult<string> match in matches)
+        {
+            MatchedSnippets.Add(match.Index, match.Value);
+        }
+
+        
+
     }
 }

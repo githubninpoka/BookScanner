@@ -120,11 +120,16 @@ public class EBooksFinder
         else if(searchParameters.FuzzySearch)
         {
             _logger.LogInformation("calling OS including everything fuzzy");
+        // https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#fuzziness
             searchResponse = await _db.SearchAsync<BookMetaData>(s => s
                 .Query(q => q
                 .Match(m => m.Field("bookText")
                 .Query(searchParameters.SingleSearchString)
-                .Fuzziness(Fuzziness.EditDistance(2))
+                //.Fuzziness(Fuzziness.EditDistance(2))
+                .Fuzziness(Fuzziness.Auto) // will allow more differentiation when the search term is longer
+                //.PrefixLength(0) // number of letters that need exact match at the beginning
+                //.MaxExpansions(50) // number of variations that will be tried
+                //.FuzzyTranspositions(true) // default: says that letters can be interchanged or not
                 )
                 )
                 .Source(sf => sf

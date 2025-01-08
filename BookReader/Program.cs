@@ -14,6 +14,12 @@ namespace BookScanner;
 
 internal class Program
 {
+
+    // Note: the current solution has a couple of projects of which this one is the oldest.
+    // this project is mostly for reference until I can phase it out completely.
+    // if you want to know more, look at EbooksIndex.UI that will start the whole indexing process.
+    // the patternmatching happens in the EbooksIndex.ClassLibrary project
+    //
     // what I like:
     // the functionality of the application is useful to me.
     // i messed around until i had it working for PDF and ePub
