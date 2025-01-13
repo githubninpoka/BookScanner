@@ -4,39 +4,38 @@
         <div class="d-inline-flex d-block justify-content-center align-items-center my-2 w-auto">
             <div class="d-inline-block" >
                 <input id="searchfield"
-                       type="text"
-                       @bind-value="SearchParameters.SingleSearchString"
-                       @bind-value:event="oninput"
-                       placeholder="Search here"
-                       @onkeydown="SearchBoxEnterClicked"
-                       class="fs-3 librarianinput"
-                       />
+                type="text"
+                @bind-value="SearchParameters.SingleSearchString"
+                @bind-value:event="oninput"
+                placeholder="Search here"
+                @onkeydown="SearchBoxEnterClicked"
+                class="fs-3 librarianinput"
+                />
             </div>
             <div class="d-inline-block">
                 <button type="button"
-                        @onclick="SearchButtonClicked"
-                        class="btn btn-primary">
+                @onclick="SearchButtonClicked"
+                class="btn btn-primary">
                     <i class="fa fa-search fa-l librarianbutton">
                     </i>
                 </button>
             </div>
         </div>
-        <div class="d-inline-flex justify-content-start align-items-baseline fs-5 w-auto">
+        <div class="d-inline-flex justify-content-start align-items-baseline fs-5 w-auto" @onclick="ToggleOnlyReferences">
 
             <input type="checkbox"
-                   @bind-value="SearchParameters.OnlyReference" />
+            @bind="SearchParameters.OnlyReference" />
             <label class="mx-2">Limit search to my selected reference books? </label>
         </div>
-        <div class="d-inline-flex justify-content-start align-items-baseline fs-5 w-auto">
+        <div class="d-inline-flex justify-content-start align-items-baseline fs-5 w-auto" @onclick="ToggleAlsoTarot">
 
             <input type="checkbox"
-                   @bind-value="SearchParameters.AlsoTarot" />
+            @bind="SearchParameters.AlsoTarot" />
             <label class="mx-2">Limit search to tarot books? </label>
         </div>
-        <div class="d-inline-flex justify-content-start align-items-baseline fs-5 w-auto">
-
+        <div class="d-inline-flex justify-content-start align-items-baseline fs-5 w-auto" @onclick="ToggleFuzzy">
             <input type="checkbox"
-                   @bind-value="SearchParameters.FuzzySearch" />
+            @bind="SearchParameters.FuzzySearch" />
             <label class="mx-2">Perform fuzzy search? Experimental and unreliable </label>
         </div>
     </div>
@@ -52,6 +51,18 @@
     private void SearchButtonClicked()
     {
         OnSearchToBePerformed.InvokeAsync(SearchParameters);
+    }
+
+    private void ToggleOnlyReferences(){
+        SearchParameters.OnlyReference = !SearchParameters.OnlyReference;
+    }
+
+    private void ToggleAlsoTarot(){
+        SearchParameters.AlsoTarot = !SearchParameters.AlsoTarot;
+    }
+
+    private void ToggleFuzzy(){
+        SearchParameters.FuzzySearch = !SearchParameters.FuzzySearch;
     }
 
     private void SearchBoxEnterClicked(KeyboardEventArgs k)

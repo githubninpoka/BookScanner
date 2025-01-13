@@ -121,7 +121,7 @@ public class MatchedEbook : IMatchedEbook
             {
                 if (searchString.IsComparableToOpenSearchLevenshtein(words[i]))
                 {
-                    words[i] = $"<span class=\"fw-bold text-decoration-underline\"> - {words[i]} - </span>";
+                    words[i] = $"<span class=\"fw-bold text-decoration-underline\"> - {searchString} => {words[i]} - </span>";
                 }
             }
             string newSnippet = string.Join(' ', words);
