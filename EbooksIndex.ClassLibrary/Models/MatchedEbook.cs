@@ -112,7 +112,21 @@ public class MatchedEbook : IMatchedEbook
 
     public void MarkFuzzyMatches(string searchString, ILogger _logger)
     {
-        throw new NotImplementedException("I will do this but not now. I am already happy that I got Fuzzy Matching in a working state - 2025 january.");
+        string upperString = searchString.ToUpper();
+        foreach (var item in MatchedSnippets)
+        {
+            string snippet = item.Value;
+            string[] words = snippet.Split(' ');
+            for (int i = 0; i < words.Length; i++)
+            {
+                if (searchString.IsComparableToOpenSearchLevenshtein(words[i]))
+                {
+                    words[i] = $"<span class=\"fw-bold text-decoration-underline\"> - {words[i]} - </span>";
+                }
+            }
+            string newSnippet = string.Join(' ', words);
+            MatchedSnippets[item.Key] = newSnippet;
+        }
     }
 }
 
