@@ -27,14 +27,14 @@ public class EBooksFinder
     }
     public async Task<(int, List<IEbookMetaData>)> FindEBooksAsync(SearchParameters searchParameters, CancellationToken cancellationToken)
     {
-        _logger.LogDebug("first step in find ebooks async method");
-        _logger.LogInformation("Searching with Referencebooks set to {var}", searchParameters.OnlyReference);
-        _logger.LogInformation("Searching with Tarotbooks set to {var}", searchParameters.AlsoTarot);
+        _logger.LogDebug("{var} - {var2} - first step in find ebooks async method", nameof(EBooksFinder), nameof(FindEBooksAsync));
+        _logger.LogInformation("{var} - {var2} - Searching with Referencebooks set to {var3}", nameof(EBooksFinder), nameof(FindEBooksAsync), searchParameters.OnlyReference);
+        _logger.LogInformation("{var} - {var2} - Searching with Tarotbooks set to {var3}", nameof(EBooksFinder), nameof(FindEBooksAsync), searchParameters.AlsoTarot);
         ISearchResponse<BookMetaData> searchResponse;
         if (searchParameters.OnlyReference && searchParameters.AlsoTarot)
         {
 
-            _logger.LogInformation("calling OS with limited reach");
+            _logger.LogInformation("{var} - {var2} - calling OS with limited reach", nameof(EBooksFinder), nameof(FindEBooksAsync));
             searchResponse = await _db.SearchAsync<BookMetaData>(s => s
                 .Query(q => q
                     .Bool(b => b
@@ -65,7 +65,7 @@ public class EBooksFinder
         }
         else if (searchParameters.OnlyReference && !searchParameters.AlsoTarot)
         {
-            _logger.LogInformation("calling OS with limited reach");
+            _logger.LogInformation("{var} - {var2} - calling OS with limited reach", nameof(EBooksFinder), nameof(FindEBooksAsync));
             searchResponse = await _db.SearchAsync<BookMetaData>(s => s
                 .Query(q => q
                     .Bool(b => b
@@ -92,7 +92,7 @@ public class EBooksFinder
         else if (!searchParameters.OnlyReference && searchParameters.AlsoTarot)
         {
 
-            _logger.LogInformation("calling OS with limited reach");
+            _logger.LogInformation("{var} - {var2} - calling OS with limited reach", nameof(EBooksFinder), nameof(FindEBooksAsync));
             searchResponse = await _db.SearchAsync<BookMetaData>(s => s
                 .Query(q => q
                     .Bool(b => b
@@ -119,7 +119,7 @@ public class EBooksFinder
         }
         else if(searchParameters.FuzzySearch)
         {
-            _logger.LogInformation("calling OS including everything fuzzy");
+            _logger.LogInformation("{var} - {var2} - calling OS including everything fuzzy", nameof(EBooksFinder), nameof(FindEBooksAsync));
         // https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#fuzziness
             searchResponse = await _db.SearchAsync<BookMetaData>(s => s
                 .Query(q => q
@@ -148,7 +148,7 @@ public class EBooksFinder
         }
         else
         {
-            _logger.LogInformation("calling OS including everything");
+            _logger.LogInformation("{var} - {var2} - calling OS including everything", nameof(EBooksFinder), nameof(FindEBooksAsync));
             searchResponse = await _db.SearchAsync<BookMetaData>(s => s
                 .Query(q => q
                 .MatchPhrase(m => m.Field("bookText").Query(searchParameters.SingleSearchString))
@@ -169,18 +169,18 @@ public class EBooksFinder
         }
         if (!searchResponse.IsValid)
         {
-            _logger.LogWarning("Search was not valid {var}", searchResponse.DebugInformation);
-            _logger.LogInformation("Did search terminate early: {var} ", searchResponse.TerminatedEarly);
-            _logger.LogInformation("Did search timeout: {var} ", searchResponse.TimedOut);
-            _logger.LogInformation("Message? {var} ", searchResponse.OriginalException.Message);
+            _logger.LogWarning("{var2} - {var3} - Search was not valid {var}", nameof(EBooksFinder), nameof(FindEBooksAsync), searchResponse.DebugInformation);
+            _logger.LogInformation("{var2} - {var3} - Did search terminate early: {var}", nameof(EBooksFinder), nameof(FindEBooksAsync), searchResponse.TerminatedEarly);
+            _logger.LogInformation("{var2} - {var3} - Did search timeout: {var} ", nameof(EBooksFinder), nameof(FindEBooksAsync), searchResponse.TimedOut);
+            _logger.LogInformation("{var2} - {var3} - Message? {var} ", nameof(EBooksFinder), nameof(FindEBooksAsync), searchResponse.OriginalException.Message);
             return (0, null);
         }
         else
         {
-            _logger.LogInformation("Search contained a max of {var} results. Consider pagination if over {var2}", searchResponse.HitsMetadata.Total.Value, Constants.Constants.OPENSEARCH_MAX_TAKE);
+            _logger.LogInformation("{var3} - {var4} - Search contained a max of {var} results. Consider pagination if over {var2}", nameof(EBooksFinder), nameof(FindEBooksAsync), searchResponse.HitsMetadata.Total.Value, Constants.Constants.OPENSEARCH_MAX_TAKE);
         }
 
-        _logger.LogDebug("After the async query to opensearch itself");
+        _logger.LogDebug("{var} - {var2} - After the async query to opensearch itself",nameof(EBooksFinder), nameof(FindEBooksAsync));
 
         foreach (var item in searchResponse.Hits)
         {
@@ -190,8 +190,8 @@ public class EBooksFinder
             doc.OpenSearchId = id;
             booksMetadata.Add(doc);
         }
-        _logger.LogWarning("Search was valid {var}", searchResponse.DebugInformation);
-        _logger.LogInformation("OS search took {var} milliseconds", searchResponse.Took);
+        _logger.LogWarning("{var} - {var2} - Search was valid {var3}",nameof(EBooksFinder),nameof(FindEBooksAsync), searchResponse.DebugInformation);
+        _logger.LogInformation("{var} - {var2} - OS search took {var3} milliseconds",nameof(EBooksFinder), nameof(FindEBooksAsync), searchResponse.Took);
         return ((int)searchResponse.HitsMetadata.Total.Value, booksMetadata);
     }
 }

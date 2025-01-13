@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EbooksIndex.ClassLibrary", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EbookSearch.Web", "EbookSearch.Web\EbookSearch.Web.csproj", "{06B4633F-57B1-4566-90A3-3A62334E6A26}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LevenshteinTesterConsole", "LevenshteinTesterConsole\LevenshteinTesterConsole.csproj", "{878D31DB-C91F-4FDA-9658-CFC1E9570753}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{06B4633F-57B1-4566-90A3-3A62334E6A26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06B4633F-57B1-4566-90A3-3A62334E6A26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06B4633F-57B1-4566-90A3-3A62334E6A26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{878D31DB-C91F-4FDA-9658-CFC1E9570753}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{878D31DB-C91F-4FDA-9658-CFC1E9570753}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{878D31DB-C91F-4FDA-9658-CFC1E9570753}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{878D31DB-C91F-4FDA-9658-CFC1E9570753}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

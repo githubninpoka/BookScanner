@@ -31,7 +31,7 @@
 
     async Task BookCardClicked(string input)
     {
-        Logger.LogInformation("User selected book card {var} ", input);
+        Logger.LogInformation("{var} - {var2} - User selected book card {var3} ",nameof(BookMetaDataComponent),nameof(BookCardClicked), input);
         await OnBookClicked.InvokeAsync(input);
 
     }

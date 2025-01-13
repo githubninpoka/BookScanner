@@ -15,7 +15,7 @@
     </div>
     <p>&nbsp;</p>
     <p>
-        @thisBook.FileName contains @thisBook.MatchedSnippets.Count matching sections.
+        @thisBook.FileName contains @thisBook.MatchedSnippets.Count matching sections. It cost @(_snippetTime / 1000) seconds to process.
     </p>
     <div class="position-relative overflow-scroll">
         @for (int i = 0; i < thisBook.MatchedSnippets.Count; i++)
@@ -29,15 +29,22 @@
             </div>
         }
     </div>
+}else if(thisBook != null && thisBook.MatchedSnippets.Count == 0)
+{
+    <div>There were no matches in this book after all.... If you are using Fuzzy Search, remember it can be buggy. Please contact me so I can see what is going on.</div>
 }
 
 @code {
+    [Parameter]
+    public string BookOpenSearchId { get; set; }
+
+    private string _lastBookOpenSearchId = "";
 
     [Parameter]
-    public string BookOpenSearchId { get; set; } = "";
+    public SearchParameters SearchParameters { get; set; }
 
     [Parameter]
-    public string? SearchTerm { get; set; }
+    public DateTime? BookOpenStamp { get; set; }
 
     private IMatchedEbook? thisBook = null;
 
@@ -49,30 +56,73 @@
 
     private void CloseBook()
     {
-        BookOpenSearchId = "";
-        thisBook = null;
+        Logger.LogInformation("{var} - {var2} - Closing book {var3} for searchterm {var4}",nameof(BookDetailComponent),nameof(CloseBook), BookOpenSearchId,SearchParameters.SingleSearchString);
+        BookOpenSearchId = null;
         NavigationManager.NavigateTo($"#topoflist");
     }
 
+    // Sometimes I want to uncomment this override just for debugging, because Blazor can be a bit confusing on when Parameters are or are not available or set to null
+        /* public override Task SetParametersAsync(ParameterView parameters)
+        {
+        if (parameters.TryGetValue<string>("BookOpenSearchId", out var bookOpenSearchId))
+        {
+        if (bookOpenSearchId != BookOpenSearchId)
+        {
+        Logger.LogInformation("There was a new request to open a book: {var} while the old book was {var2}", bookOpenSearchId, BookOpenSearchId);
+        }else{
+        Logger.LogInformation("There was a request for the same book: {var} while the old book was {var2}", bookOpenSearchId, BookOpenSearchId);
+        }
+        }
+        if (parameters.TryGetValue<string>("SearchTerm", out var searchTerm))
+        {
+        if (searchTerm != SearchTerm)
+        {
+        Logger.LogInformation("There was a new incoming search term: {var} while the old term was {var2}", searchTerm, SearchTerm);
+        }else{
+        Logger.LogInformation("There was an old search term: {var} while the old term was {var2}", searchTerm, SearchTerm);
+    }
+    }
+    if (parameters.TryGetValue<DateTime?>("BookOpenStamp", out DateTime? bookOpenStamp))
+    {
+    if (BookOpenStamp != bookOpenStamp)
+        {
+        Logger.LogInformation("There was a new incoming bookStamp: {var} while the old term was {var2}", bookOpenStamp, BookOpenStamp);
+        }else{
+        Logger.LogInformation("There was an old search bookStamp: {var} while the old term was {var2}", bookOpenStamp, BookOpenStamp);
+    }
+    }
+    return base.SetParametersAsync(parameters);
+    } */
 
     protected override async Task OnParametersSetAsync()
     {
-        if (BookOpenSearchId != "" && !string.IsNullOrWhiteSpace(SearchTerm))
-        {
-            thisBook = null;
-            var sw = Stopwatch.StartNew();
-            IMatchedEbook oneBook = await EbookRetriever.Retrieve(BookOpenSearchId);
-            sw.Stop();
-            _searchTime = sw.ElapsedMilliseconds;
-            sw.Restart();
-            //oneBook.LoadMatches(SearchTerm);
-            oneBook.LoadFuzzyMatches(SearchTerm);
+        Logger.LogInformation("{var} - {var2} called",nameof(BookDetailComponent),nameof(OnParametersSetAsync));
 
-            oneBook.MarkMatches(SearchTerm);
-            sw.Stop();
-            _snippetTime = sw.ElapsedMilliseconds;
-            thisBook = oneBook;
-            _bookLength = thisBook.BookText.Length;
+        if (BookOpenSearchId != "" && !string.IsNullOrWhiteSpace(SearchParameters.SingleSearchString))
+        {
+            if (BookOpenSearchId == _lastBookOpenSearchId && thisBook != null)
+            {
+                //thisBook.LoadMatches(SearchTerm);
+                thisBook.LoadFuzzyMatches(SearchParameters.SingleSearchString,Logger);
+                thisBook.MarkMatches(SearchParameters.SingleSearchString);
+                Logger.LogInformation("{var} - {var2} - Requesting a new matching of the same book: {var3}",nameof(BookDetailComponent),nameof(OnParametersSetAsync), thisBook.FileName);
+            }else{
+                Logger.LogInformation("{var} - {var2}: Conditions for calling OpenSearch are met.", nameof(BookDetailComponent), nameof(OnParametersSetAsync));
+                thisBook = null;
+                var sw = Stopwatch.StartNew();
+                IMatchedEbook oneBook = await EbookRetriever.Retrieve(BookOpenSearchId);
+                sw.Stop();
+                _searchTime = sw.ElapsedMilliseconds;
+                _lastBookOpenSearchId = BookOpenSearchId;
+                sw.Restart();
+                // oneBook.LoadMatches(SearchTerm);
+                oneBook.LoadFuzzyMatches(SearchParameters.SingleSearchString,Logger);
+                oneBook.MarkMatches(SearchParameters.SingleSearchString);
+                sw.Stop();
+                _snippetTime = sw.ElapsedMilliseconds;
+                thisBook = oneBook;
+                _bookLength = thisBook.BookText.Length;
+            }
         }
     }
 }

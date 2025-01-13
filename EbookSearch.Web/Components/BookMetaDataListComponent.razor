@@ -89,7 +89,7 @@
         }
         else
         {
-            Logger.LogInformation("Search filter is empty in {var}",nameof(BookMetaDataListComponent));
+            Logger.LogInformation("{var} - {var2} Search filter is empty",nameof(BookMetaDataListComponent), nameof(OnParametersSetAsync));
         }
     }
 
@@ -102,7 +102,7 @@
     {
         if (_ebookMetaDatas is null || _ebookMetaDatas.Count == 0)
         {
-            Logger.LogInformation("Cancelling the search after 6 seconds! Is OpenSearch active?");
+            Logger.LogInformation("{var} - {var2} - Cancelling the search after 6 seconds! Is OpenSearch active?", nameof(BookMetaDataListComponent),nameof(CancelSearch));
             CancellationTokenSource cancellationTokenSource = (CancellationTokenSource)x;
             cancellationTokenSource.Cancel();
         }
@@ -126,7 +126,7 @@
     {
         while (await timerForAnimation.WaitForNextTickAsync(cancellationTokenSourceForAnimation.Token))
         {
-            Logger.LogDebug("Status of token: {var}", cancellationTokenSourceForAnimation.Token.IsCancellationRequested);
+            Logger.LogDebug("{var} - {var2} Status of token: {var3}",nameof(BookMetaDataListComponent),nameof(AnimateTheWhiteRabbit), cancellationTokenSourceForAnimation.Token.IsCancellationRequested);
             _informativeMessage = messages[whichMessage];
             StateHasChanged();
             whichMessage++;
@@ -135,14 +135,14 @@
                 whichMessage = 0;
             }
         }
-        Logger.LogInformation("Ended the timer for updating the information message");
+        Logger.LogInformation("{var} - {var2} Ended the timer for updating the information message",nameof(BookMetaDataListComponent),nameof(AnimateTheWhiteRabbit));
     }
     // animated message
 
 
     public void Dispose()
     {
-        Logger.LogInformation("Disposing of {var}",nameof(AnimateTheWhiteRabbit));
+        Logger.LogInformation("{var} - Disposing of {var2}",nameof(BookMetaDataListComponent),nameof(AnimateTheWhiteRabbit));
         cancellationTokenSourceForAnimation.Cancel();        
     }
 }

@@ -11,5 +11,7 @@ public class Constants
 {
     public const int READ_AHEAD_CHARACTERS = 1500;
     public const int READ_BEFORE_CHARACTERS = 200;
+    public const int READ_AHEAD_WORDS_FOR_FUZZY = 150;
+    public const int READ_BEFORE_WORDS_FOR_FUZZY = 20;
     public const int OPENSEARCH_MAX_TAKE = 150;
 }

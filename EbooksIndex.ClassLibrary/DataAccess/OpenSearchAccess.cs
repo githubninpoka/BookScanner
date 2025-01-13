@@ -26,8 +26,8 @@ public class OpenSearchAccess
         _openSearchIndex = openSearchAccessOptions.Value.OpenSearchIndex;
         _openSearchUser = openSearchAccessOptions.Value.OpenSearchUser;
         _openSearchPassword = openSearchAccessOptions.Value.OpenSearchPass;
-        _logger.LogInformation("Available URL: {var}", _openSearchUrl);
-        _logger.LogInformation("index: {var}", _openSearchIndex);
+        _logger.LogInformation("{var} - {var2} - Available URL: {var3}",nameof(OpenSearchAccess),nameof(OpenSearchAccess), _openSearchUrl);
+        _logger.LogInformation("{var} - {var2} - index: {var3}",nameof(OpenSearchAccess),nameof(OpenSearchAccess), _openSearchIndex);
     }
 
     public OpenSearchClient GetCLient()

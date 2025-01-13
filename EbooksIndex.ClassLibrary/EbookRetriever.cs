@@ -30,7 +30,7 @@ public class EbookRetriever
 
     public async Task<IMatchedEbook> Retrieve(string repositoryId)
     {
-        _logger.LogDebug("first step in retrieving a document by id");
+        _logger.LogInformation("{var} - {var2} - first step in retrieving a document by id",nameof(EbookRetriever),nameof(Retrieve));
 
         var oneDocument= await _db.GetAsync<MatchedEbook>(repositoryId);
         return oneDocument.Source;
