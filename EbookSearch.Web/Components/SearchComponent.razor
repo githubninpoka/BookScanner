@@ -1,37 +1,40 @@
-﻿<div class="d-flex position-relative justify-content-center">
+﻿@inject ILogger<SearchComponent> _logger
+
+<div class="d-flex position-relative justify-content-center">
     <div class="d-inline-flex flex-column position-relative justify-content-start">
         <div class="d-inline-flex d-block justify-content-center my-2 w-auto">
-            <EditForm Model="SearchParameters" OnSubmit="SearchButtonClicked" FormName="SearchForm">
+            <EditForm Model="SearchParameters" OnValidSubmit="SearchButtonClicked" FormName="SearchForm">
+                <DataAnnotationsValidator/>
                 <div class="d-inline-flex align-items-center w-100">
                     <InputText id="searchField"
-                               @bind-Value="SearchParameters.SingleSearchString"
-                               placeholder="Search here"
-                               @onkeydown="SearchBoxEnterClicked"
-                               class="w-100 fs-4"
-                               @ref="_searchField" />
-                        <button type="submit"
-                                class="btn btn-primary">
-                            <i class="fa fa-search fa-xl">
-                            </i>
-                        </button>
+                    @bind-Value="SearchParameters.SingleSearchString"
+                    placeholder="Search here"
+                    class="w-100 fs-4"
+                    @ref="_searchField" />
+                    <button type="submit"
+                    class="btn btn-primary">
+                        <i class="fa fa-search fa-xl">
+                        </i>
+                    </button>
                 </div>
+                <ValidationMessage For="@(() => SearchParameters.SingleSearchString)" style="text-decoration:underline;background-color:white"/>
             </EditForm>
         </div>
         <div class="d-inline-flex justify-content-start align-items-baseline fs-5 w-auto" @onclick="ToggleOnlyReferences">
 
             <input type="checkbox"
-                   @bind="SearchParameters.OnlyReference" />
+            @bind="SearchParameters.OnlyReference" />
             <label class="mx-2">Limit search to my selected reference books? </label>
         </div>
         <div class="d-inline-flex justify-content-start align-items-baseline fs-5 w-auto" @onclick="ToggleAlsoTarot">
 
             <input type="checkbox"
-                   @bind="SearchParameters.AlsoTarot" />
+            @bind="SearchParameters.AlsoTarot" />
             <label class="mx-2">Limit search to tarot books? </label>
         </div>
         <div class="d-inline-flex justify-content-start align-items-baseline fs-5 w-auto" @onclick="ToggleFuzzy">
             <input type="checkbox"
-                   @bind="SearchParameters.FuzzySearch" />
+            @bind="SearchParameters.FuzzySearch" />
             <label class="mx-2">Perform fuzzy search? Experimental and unreliable </label>
         </div>
     </div>
@@ -64,14 +67,6 @@
     private void ToggleFuzzy()
     {
         SearchParameters.FuzzySearch = !SearchParameters.FuzzySearch;
-    }
-
-    private void SearchBoxEnterClicked(KeyboardEventArgs k)
-    {
-        if (k.Key == "Enter" && (SearchParameters != null) && !string.IsNullOrEmpty(SearchParameters.SingleSearchString))
-        {
-            OnSearchToBePerformed.InvokeAsync(SearchParameters);
-        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
