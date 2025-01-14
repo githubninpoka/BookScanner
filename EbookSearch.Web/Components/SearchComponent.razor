@@ -1,41 +1,37 @@
-﻿
-<div class="d-flex position-relative justify-content-center">
+﻿<div class="d-flex position-relative justify-content-center">
     <div class="d-inline-flex flex-column position-relative justify-content-start">
-        <div class="d-inline-flex d-block justify-content-center align-items-center my-2 w-auto">
-            <div class="d-inline-block" >
-                <input id="searchfield"
-                type="text"
-                @bind-value="SearchParameters.SingleSearchString"
-                @bind-value:event="oninput"
-                placeholder="Search here"
-                @onkeydown="SearchBoxEnterClicked"
-                class="fs-3 librarianinput"
-                />
-            </div>
-            <div class="d-inline-block">
-                <button type="button"
-                @onclick="SearchButtonClicked"
-                class="btn btn-primary">
-                    <i class="fa fa-search fa-l librarianbutton">
-                    </i>
-                </button>
-            </div>
+        <div class="d-inline-flex d-block justify-content-center my-2 w-auto" style="border:solid;border-width:thick;border-color:chartreuse">
+            <EditForm Model="SearchParameters" OnSubmit="SearchButtonClicked" FormName="SearchForm">
+                <div class="d-inline-flex align-items-center w-100">
+                    <InputText id="searchField"
+                               @bind-Value="SearchParameters.SingleSearchString"
+                               placeholder="Search here"
+                               @onkeydown="SearchBoxEnterClicked"
+                               class="w-100 fs-4"
+                               @ref="_searchField" />
+                        <button type="submit"
+                                class="btn btn-primary">
+                            <i class="fa fa-search fa-xl">
+                            </i>
+                        </button>
+                </div>
+            </EditForm>
         </div>
         <div class="d-inline-flex justify-content-start align-items-baseline fs-5 w-auto" @onclick="ToggleOnlyReferences">
 
             <input type="checkbox"
-            @bind="SearchParameters.OnlyReference" />
+                   @bind="SearchParameters.OnlyReference" />
             <label class="mx-2">Limit search to my selected reference books? </label>
         </div>
         <div class="d-inline-flex justify-content-start align-items-baseline fs-5 w-auto" @onclick="ToggleAlsoTarot">
 
             <input type="checkbox"
-            @bind="SearchParameters.AlsoTarot" />
+                   @bind="SearchParameters.AlsoTarot" />
             <label class="mx-2">Limit search to tarot books? </label>
         </div>
         <div class="d-inline-flex justify-content-start align-items-baseline fs-5 w-auto" @onclick="ToggleFuzzy">
             <input type="checkbox"
-            @bind="SearchParameters.FuzzySearch" />
+                   @bind="SearchParameters.FuzzySearch" />
             <label class="mx-2">Perform fuzzy search? Experimental and unreliable </label>
         </div>
     </div>
@@ -48,20 +44,25 @@
     [Parameter]
     public EventCallback<SearchParameters> OnSearchToBePerformed { get; set; }
 
+    private InputText _searchField;
+
     private void SearchButtonClicked()
     {
         OnSearchToBePerformed.InvokeAsync(SearchParameters);
     }
 
-    private void ToggleOnlyReferences(){
+    private void ToggleOnlyReferences()
+    {
         SearchParameters.OnlyReference = !SearchParameters.OnlyReference;
     }
 
-    private void ToggleAlsoTarot(){
+    private void ToggleAlsoTarot()
+    {
         SearchParameters.AlsoTarot = !SearchParameters.AlsoTarot;
     }
 
-    private void ToggleFuzzy(){
+    private void ToggleFuzzy()
+    {
         SearchParameters.FuzzySearch = !SearchParameters.FuzzySearch;
     }
 
@@ -70,6 +71,17 @@
         if (k.Key == "Enter" && (SearchParameters != null) && !string.IsNullOrEmpty(SearchParameters.SingleSearchString))
         {
             OnSearchToBePerformed.InvokeAsync(SearchParameters);
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (_searchField is not null && _searchField.Element is not null)
+            {
+                await _searchField.Element.Value.FocusAsync();
+            }
         }
     }
 }
