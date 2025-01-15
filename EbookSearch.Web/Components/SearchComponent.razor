@@ -4,38 +4,45 @@
     <div class="d-inline-flex flex-column position-relative justify-content-start">
         <div class="d-inline-flex d-block justify-content-center my-2 w-auto">
             <EditForm Model="SearchParameters" OnValidSubmit="SearchButtonClicked" FormName="SearchForm">
-                <DataAnnotationsValidator/>
+                <DataAnnotationsValidator />
                 <div class="d-inline-flex align-items-center w-100">
                     <InputText id="searchField"
-                    @bind-Value="SearchParameters.SingleSearchString"
-                    placeholder="Search here"
-                    class="w-100 fs-4"
-                    @ref="_searchField" />
+                               @bind-Value="SearchParameters.SingleSearchString"
+                               placeholder="Search here"
+                               class="w-100 fs-4"
+                               @ref="_searchField" />
                     <button type="submit"
-                    class="btn btn-primary">
+                            class="btn btn-primary">
                         <i class="fa fa-search fa-xl">
                         </i>
                     </button>
                 </div>
-                <ValidationMessage For="@(() => SearchParameters.SingleSearchString)" style="text-decoration:underline;background-color:white"/>
+                <ValidationMessage For="@(() => SearchParameters.SingleSearchString)" style="text-decoration:underline;background-color:white" />
             </EditForm>
         </div>
-        <div class="d-inline-flex justify-content-start align-items-baseline fs-5 w-auto" @onclick="ToggleOnlyReferences">
-
+        <div class="form-check form-switch">
             <input type="checkbox"
-            @bind="SearchParameters.OnlyReference" />
-            <label class="mx-2">Limit search to my selected reference books? </label>
+                   id="switchReferences"
+                   role="switch"
+                   @bind="SearchParameters.OnlyReference"
+                   class="form-check-input" />
+            <label class="form-check-label" for="switchReferences">Prefer a subset of pre-selected books? </label>
         </div>
-        <div class="d-inline-flex justify-content-start align-items-baseline fs-5 w-auto" @onclick="ToggleAlsoTarot">
-
+        <div class="form-check form-switch">
             <input type="checkbox"
-            @bind="SearchParameters.AlsoTarot" />
-            <label class="mx-2">Limit search to tarot books? </label>
+                   id="switchTarot"
+                   role="switch"
+                   @bind="SearchParameters.AlsoTarot"
+                   class="form-check-input" />
+            <label class="form-check-label" for="switchTarot">Prefer a subset of tarot books? </label>
         </div>
-        <div class="d-inline-flex justify-content-start align-items-baseline fs-5 w-auto" @onclick="ToggleFuzzy">
+        <div class="form-check form-switch">
             <input type="checkbox"
-            @bind="SearchParameters.FuzzySearch" />
-            <label class="mx-2">Perform fuzzy search? Experimental and unreliable </label>
+                   id="switchFuzzy"
+                   role="switch"
+                   @bind="SearchParameters.FuzzySearch"
+                   class="form-check-input" />
+            <label class="form-check-label" for="switchFuzzy">Perform fuzzy search? Experimental and unreliable </label>
         </div>
     </div>
 </div>
@@ -52,21 +59,6 @@
     private void SearchButtonClicked()
     {
         OnSearchToBePerformed.InvokeAsync(SearchParameters);
-    }
-
-    private void ToggleOnlyReferences()
-    {
-        SearchParameters.OnlyReference = !SearchParameters.OnlyReference;
-    }
-
-    private void ToggleAlsoTarot()
-    {
-        SearchParameters.AlsoTarot = !SearchParameters.AlsoTarot;
-    }
-
-    private void ToggleFuzzy()
-    {
-        SearchParameters.FuzzySearch = !SearchParameters.FuzzySearch;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
