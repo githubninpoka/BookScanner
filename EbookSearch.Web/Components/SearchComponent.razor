@@ -1,19 +1,19 @@
 ﻿@inject ILogger<SearchComponent> _logger
 
 <div class="d-flex position-relative justify-content-center">
-    <div class="d-inline-flex flex-column position-relative justify-content-start">
+    <div class="d-inline-flex flex-column position-relative justify-content-start" >
         <div class="d-inline-flex d-block justify-content-center my-2 w-auto">
-            <EditForm Model="SearchParameters" OnValidSubmit="SearchButtonClicked" FormName="SearchForm">
+            <EditForm Model="SearchParameters" OnValidSubmit="SearchButtonClicked" FormName="SearchForm" class="w-100">
                 <DataAnnotationsValidator />
-                <div class="d-inline-flex align-items-center w-100">
+                <div class="input-group mb-2">
                     <InputText id="searchField"
-                               @bind-Value="SearchParameters.SingleSearchString"
-                               placeholder="Search here"
-                               class="w-100 fs-4"
-                               @ref="_searchField" />
+                    @bind-Value="SearchParameters.SingleSearchString"
+                    placeholder="Search here"
+                    class="form-control"
+                    @ref="_searchField" />
                     <button type="submit"
-                            class="btn btn-primary">
-                        <i class="fa fa-search fa-xl">
+                    class="btn btn-primary">
+                        <i class="fa fa-search">
                         </i>
                     </button>
                 </div>
@@ -22,27 +22,27 @@
         </div>
         <div class="form-check form-switch">
             <input type="checkbox"
-                   id="switchReferences"
-                   role="switch"
-                   @bind="SearchParameters.OnlyReference"
-                   class="form-check-input" />
+            id="switchReferences"
+            role="switch"
+            @bind="SearchParameters.OnlyReference"
+            class="form-check-input" />
             <label class="form-check-label" for="switchReferences">Prefer a subset of pre-selected books? </label>
         </div>
         <div class="form-check form-switch">
             <input type="checkbox"
-                   id="switchTarot"
-                   role="switch"
-                   @bind="SearchParameters.AlsoTarot"
-                   class="form-check-input" />
+            id="switchTarot"
+            role="switch"
+            @bind="SearchParameters.AlsoTarot"
+            class="form-check-input" />
             <label class="form-check-label" for="switchTarot">Prefer a subset of tarot books? </label>
         </div>
         <div class="form-check form-switch">
             <input type="checkbox"
-                   id="switchFuzzy"
-                   role="switch"
-                   @bind="SearchParameters.FuzzySearch"
-                   class="form-check-input" />
-            <label class="form-check-label" for="switchFuzzy">Perform fuzzy search? Experimental and unreliable </label>
+            id="switchFuzzy"
+            role="switch"
+            @bind="SearchParameters.FuzzySearch"
+            class="form-check-input" />
+            <label class="form-check-label" for="switchFuzzy">Perform fuzzy search?<br />(Experimental and unreliable..)</label>
         </div>
     </div>
 </div>

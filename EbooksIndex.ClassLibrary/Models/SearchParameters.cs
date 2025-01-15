@@ -9,7 +9,7 @@ namespace EbooksIndex.ClassLibrary.Models;
 
 public class SearchParameters
 {
-    [MinLength(4, ErrorMessage = "Zoek met 1 woord, minimaal 4 karakters lang")]
+    [MinLength(4, ErrorMessage = "Use at least 4 characters")] 
     public string? SingleSearchString { get; set; }
 
     public bool OnlyReference { get; set; } = false;
