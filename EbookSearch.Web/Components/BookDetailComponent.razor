@@ -101,16 +101,7 @@ else if (thisBook != null && thisBook.MatchedSnippets.Count == 0)
         {
             if (BookOpenSearchId == _lastBookOpenSearchId && thisBook != null)
             {
-                if (SearchParameters.FuzzySearch)
-                {
-                    thisBook.LoadFuzzyMatches(SearchParameters.SingleSearchString, Logger);
-                    thisBook.MarkFuzzyMatches(SearchParameters.SingleSearchString, Logger);
-                }
-                else
-                {
-                    thisBook.LoadMatches(SearchParameters.SingleSearchString);
-                    thisBook.MarkMatches(SearchParameters.SingleSearchString);
-                }
+                thisBook.FillSnippets(SearchParameters, Logger);
                 Logger.LogInformation("{var} - {var2} - Requesting a new matching of the same book: {var3}", nameof(BookDetailComponent), nameof(OnParametersSetAsync), thisBook.FileName);
             }
             else
@@ -123,16 +114,7 @@ else if (thisBook != null && thisBook.MatchedSnippets.Count == 0)
                 _searchTime = sw.ElapsedMilliseconds;
                 _lastBookOpenSearchId = BookOpenSearchId;
                 sw.Restart();
-                if (SearchParameters.FuzzySearch)
-                {
-                    oneBook.LoadFuzzyMatches(SearchParameters.SingleSearchString, Logger);
-                    oneBook.MarkFuzzyMatches(SearchParameters.SingleSearchString, Logger);
-                }
-                else
-                {
-                    oneBook.LoadMatches(SearchParameters.SingleSearchString);
-                    oneBook.MarkMatches(SearchParameters.SingleSearchString);
-                }
+                oneBook.FillSnippets(SearchParameters, Logger);
                 sw.Stop();
                 _snippetTime = sw.ElapsedMilliseconds;
                 thisBook = oneBook;

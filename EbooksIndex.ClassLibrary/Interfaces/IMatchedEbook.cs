@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using EbooksIndex.ClassLibrary.Models;
+using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 
 namespace EbooksIndex.ClassLibrary.Interfaces;
@@ -15,9 +16,5 @@ public interface IMatchedEbook
 
     Dictionary<int,string> MatchedSnippets { get; }
 
-    // Redundant comment, but I am very happy to write that I got this fuzzy logic working in a usable manner!
-    void LoadMatches(string searchString);
-    void MarkMatches(string searchString);
-    void LoadFuzzyMatches(string searchString, ILogger _logger);
-    void MarkFuzzyMatches(string searchString, ILogger _logger);
+    void FillSnippets(SearchParameters searchParameters, ILogger _logger);
 }

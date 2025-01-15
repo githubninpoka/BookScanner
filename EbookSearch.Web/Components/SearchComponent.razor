@@ -9,7 +9,7 @@
                     <InputText id="searchField"
                     @bind-Value="SearchParameters.SingleSearchString"
                     placeholder="Search here"
-                    class="form-control"
+                    class="form-control fs-5"
                     @ref="_searchField" />
                     <button type="submit"
                     class="btn btn-primary">
@@ -35,6 +35,14 @@
             @bind="SearchParameters.AlsoTarot"
             class="form-check-input" />
             <label class="form-check-label" for="switchTarot">Prefer a subset of tarot books? </label>
+        </div>
+        <div class="form-check form-switch">
+            <input type="checkbox"
+            id="switchLargeSnippet"
+            role="switch"
+            @bind="SearchParameters.LargeSnippets"
+            class="form-check-input" />
+            <label class="form-check-label" for="switchLargeSnippet">Show larger bits of text?</label>
         </div>
         <div class="form-check form-switch">
             <input type="checkbox"
