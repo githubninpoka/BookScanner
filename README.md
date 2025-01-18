@@ -5,20 +5,29 @@
 The Librarian is a personal project that opens up a library of digital books that I've gathered over the years.
 
 Right now you can search for single words:
-	- Within a selection of books that I have found very useful (References)
-	- Within a selection of books that have tarot as their main topic
-	- Within all books (default)
+<br/>
+<ul>
+	<li>Within a selection of books that I have found very useful (Reference)</li>
+	<li>Within a selection of books that have tarot as their main topic</ul>
+	<li>Within all books (default)</li>
+</ul>
 
 The user can choose to:
-	- Show results in normal or large text snippets
-	- Search in a fuzzy way (Levenshtein distance algorithm)
+<ul>
+<li>Show results in normal or large text snippets</li>
+<li>Search in a fuzzy way (Levenshtein distance algorithm)</li>
+</ul>
 
 HOW TO USE:
-	- Just type a term, a single word and hit enter. A list of books containing the words should show up
-	- Click a book in the resulting list to show all passages in that book
+<ul>
+<li>Just type a term, a single word and hit enter. A list of books containing the words should show up</li>
+<li>Click a book in the resulting list to show all passages in that book</li>
+</ul>
 
 Prerequisites:
-	- a working instance of OpenSearch
+<ul>
+<li>A working instance of OpenSearch</li>
+</ul>
 
 ===============================================================================================================
 Loading data:
