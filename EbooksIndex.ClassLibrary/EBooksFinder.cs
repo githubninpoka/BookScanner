@@ -28,145 +28,67 @@ public class EBooksFinder
     public async Task<(int, List<IEbookMetaData>)> FindEBooksAsync(SearchParameters searchParameters, CancellationToken cancellationToken)
     {
         _logger.LogDebug("{var} - {var2} - first step in find ebooks async method", nameof(EBooksFinder), nameof(FindEBooksAsync));
-        _logger.LogInformation("{var} - {var2} - Searching with Referencebooks set to {var3}", nameof(EBooksFinder), nameof(FindEBooksAsync), searchParameters.OnlyReference);
-        _logger.LogInformation("{var} - {var2} - Searching with Tarotbooks set to {var3}", nameof(EBooksFinder), nameof(FindEBooksAsync), searchParameters.AlsoTarot);
-        ISearchResponse<BookMetaData> searchResponse;
-        if (searchParameters.OnlyReference && searchParameters.AlsoTarot)
-        {
 
-            _logger.LogInformation("{var} - {var2} - calling OS with limited reach", nameof(EBooksFinder), nameof(FindEBooksAsync));
-            searchResponse = await _db.SearchAsync<BookMetaData>(s => s
-                .Query(q => q
-                    .Bool(b => b
-                        .Should(
-                            mu => mu.MatchPhrase(m => m.Field("filePath").Query("Tarot_enDigitaleTarots")),
-                            mu => mu.MatchPhrase(m => m.Field("filePath").Query("GoToReferenceBooks"))
-                            )
-                        .MinimumShouldMatch(1)
-                        .Must(
-                            mu => mu.MatchPhrase(m => m.Field("bookText").Query(searchParameters.SingleSearchString))
-                            )
-                        )
-                    )
-                .Source(sf => sf
-                    .Includes(i => i
-                        .Fields(
-                            f => f.Title,
-                            f => f.Pages,
-                            f => f.Author,
-                            f => f.FilePath,
-                            f => f.FileName
-                            )
-                )
-                )
-                .Take(Constants.Constants.OPENSEARCH_MAX_TAKE)
-            ,cancellationToken);
+        int querySize = Constants.Constants.OPENSEARCH_MAX_TAKE;
 
-        }
-        else if (searchParameters.OnlyReference && !searchParameters.AlsoTarot)
-        {
-            _logger.LogInformation("{var} - {var2} - calling OS with limited reach", nameof(EBooksFinder), nameof(FindEBooksAsync));
-            searchResponse = await _db.SearchAsync<BookMetaData>(s => s
-                .Query(q => q
-                    .Bool(b => b
-                        .Must(
-                            mu => mu.MatchPhrase(m => m.Field("filePath").Query("GoToReferenceBooks")),
-                            mu => mu.MatchPhrase(m => m.Field("bookText").Query(searchParameters.SingleSearchString))
-                            )
-                        )
-                    )
-                .Source(sf => sf
-                    .Includes(i => i
-                        .Fields(
-                            f => f.Title,
-                            f => f.Pages,
-                            f => f.Author,
-                            f => f.FilePath,
-                            f => f.FileName
-                            )
-                )
-                )
-                .Take(Constants.Constants.OPENSEARCH_MAX_TAKE)
-            ,cancellationToken);
-        }
-        else if (!searchParameters.OnlyReference && searchParameters.AlsoTarot)
-        {
+        MatchQuery searchString = new MatchQuery() { 
+            Field = "bookText", 
+            Query = searchParameters.SingleSearchString 
+        };
 
-            _logger.LogInformation("{var} - {var2} - calling OS with limited reach", nameof(EBooksFinder), nameof(FindEBooksAsync));
-            searchResponse = await _db.SearchAsync<BookMetaData>(s => s
-                .Query(q => q
-                    .Bool(b => b
-                        .Must(
-
-                            mu => mu.MatchPhrase(m => m.Field("filePath").Query("Tarot_enDigitaleTarots")),
-                            mu => mu.MatchPhrase(m => m.Field("bookText").Query(searchParameters.SingleSearchString))
-                            )
-                        )
-                    )
-                .Source(sf => sf
-                    .Includes(i => i
-                        .Fields(
-                            f => f.Title,
-                            f => f.Pages,
-                            f => f.Author,
-                            f => f.FilePath,
-                            f => f.FileName
-                            )
-                )
-                )
-                .Take(Constants.Constants.OPENSEARCH_MAX_TAKE)
-            ,cancellationToken);
-        }
-        else if(searchParameters.FuzzySearch)
-        {
-            _logger.LogInformation("{var} - {var2} - calling OS including everything fuzzy", nameof(EBooksFinder), nameof(FindEBooksAsync));
         // https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#fuzziness
-            searchResponse = await _db.SearchAsync<BookMetaData>(s => s
-                .Query(q => q
-                .Match(m => m.Field("bookText")
-                .Query(searchParameters.SingleSearchString)
-                //.Fuzziness(Fuzziness.EditDistance(2))
-                .Fuzziness(Fuzziness.Auto) // will allow more differentiation when the search term is longer
-                //.PrefixLength(0) // number of letters that need exact match at the beginning
-                //.MaxExpansions(50) // number of variations that will be tried
-                //.FuzzyTranspositions(true) // default: says that letters can be interchanged or not
-                )
-                )
-                .Source(sf => sf
-                    .Includes(i => i
-                        .Fields(
-                            f => f.Title,
-                            f => f.Pages,
-                            f => f.Author,
-                            f => f.FilePath,
-                            f => f.FileName
-                            )
-                )
-                )
-                .Take(Constants.Constants.OPENSEARCH_MAX_TAKE)
-            , cancellationToken);
-        }
-        else
+        if (searchParameters.FuzzySearch)
         {
-            _logger.LogInformation("{var} - {var2} - calling OS including everything", nameof(EBooksFinder), nameof(FindEBooksAsync));
-            searchResponse = await _db.SearchAsync<BookMetaData>(s => s
-                .Query(q => q
-                .MatchPhrase(m => m.Field("bookText").Query(searchParameters.SingleSearchString))
-                )
-                .Source(sf => sf
-                    .Includes(i => i
-                        .Fields(
-                            f => f.Title,
-                            f => f.Pages,
-                            f => f.Author,
-                            f => f.FilePath,
-                            f => f.FileName
-                            )
-                )
-                )
-                .Take(Constants.Constants.OPENSEARCH_MAX_TAKE)
-            , cancellationToken);
+            searchString.Fuzziness = Fuzziness.Auto;
         }
+
+        List<QueryContainer> pathsToMatch = new (); // apparently the boolQuery needs an IEnumerable of type QueryContainer and MatchQuery is a QueryContainer.
+        List<string> pathStrings = new();
+        if (searchParameters.OnlyReference)
+        {
+            pathStrings.Add("GoToReferenceBooks");
+        }
+        if (searchParameters.AlsoTarot)
+        {
+            pathStrings.Add("Tarot_enDigitaleTarots");
+        }
+        foreach (var path in pathStrings)
+        {
+            pathsToMatch.Add(new MatchQuery() { Field="filePath",Query=path});
+            _logger.LogInformation("{var1} - {var2} - Searching in {var3}", nameof(EBooksFinder), nameof(FindEBooksAsync), path);
+        }
+
+        List<Field> includedSourceFields = new() { 
+            new Field("title"),
+            new Field("pages"),
+            new Field("author"),
+            new Field("filePath"),
+            new Field("fileName")
+        };
+
+        SourceFilter sourceFilter = new SourceFilter()
+        {
+            Includes = includedSourceFields.ToArray()
+        };
+        
+        BoolQuery boolQuery = new BoolQuery()
+        {
+            Must = [searchString]
+        };
+        if (pathsToMatch.Count > 0)
+        {
+            boolQuery.MinimumShouldMatch = 1;
+            boolQuery.Should = pathsToMatch.ToArray();
+        }
+        var query = new SearchRequest()
+        {
+            Query = boolQuery,
+            Size = querySize,
+            Source = sourceFilter
+        };
+
+        ISearchResponse<BookMetaData> searchResponse = await _db.SearchAsync<BookMetaData>(query,cancellationToken);
+ 
         if (!searchResponse.IsValid)
         {
             _logger.LogWarning("{var2} - {var3} - Search was not valid {var}", nameof(EBooksFinder), nameof(FindEBooksAsync), searchResponse.DebugInformation);
