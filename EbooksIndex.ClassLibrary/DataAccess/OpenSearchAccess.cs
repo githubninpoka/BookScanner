@@ -16,8 +16,6 @@ public class OpenSearchAccess
     private readonly string? _openSearchIndex;
     private readonly string? _openSearchUrl;
 
-    private OpenSearchClient? _openSearchClient;
-
     public OpenSearchAccess(IOptions<OpenSearchAccessOptions> openSearchAccessOptions,
         ILogger<OpenSearchAccess> logger)
     {

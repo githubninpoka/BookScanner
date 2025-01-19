@@ -1,6 +1,8 @@
 using EbookSearch.Web.Components;
+
 using EbooksIndex.ClassLibrary;
 using EbooksIndex.ClassLibrary.DataAccess;
+
 using Serilog;
 
 namespace EbookSearch.Web
@@ -31,6 +33,8 @@ namespace EbookSearch.Web
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
+            builder.Services.AddMemoryCache();
+            
             builder.Services.Configure<OpenSearchAccessOptions>(builder.Configuration.GetSection("BooksOpenSearchOptions"));
             builder.Services.AddScoped<OpenSearchAccess>();
             builder.Services.AddScoped<EBooksFinder>();
