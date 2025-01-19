@@ -79,6 +79,7 @@ The project has two purposes.
 		- Serilog
 		- PeriodicTimer
 		- string extension methods
+		- input validations with custom data annotation
 		- Async with cancellationtokens
 		- Exception handling
 		- Components, callbacks etc. in Blazor

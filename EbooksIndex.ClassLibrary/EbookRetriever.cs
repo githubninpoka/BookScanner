@@ -46,7 +46,8 @@ public class EbookRetriever
             MemoryCacheEntryOptions cacheOptions = new MemoryCacheEntryOptions()
                 .SetSlidingExpiration(TimeSpan.FromSeconds(600))
                 .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
-                .SetPriority(CacheItemPriority.Normal);
+                .SetPriority(CacheItemPriority.Normal)
+                .SetSize(1);
                 
                 
             _memoryCache.Set(repositoryId, returnableEbook, cacheOptions);

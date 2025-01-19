@@ -33,8 +33,12 @@ namespace EbookSearch.Web
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
-            builder.Services.AddMemoryCache();
-            
+            builder.Services.AddMemoryCache(options =>
+            {
+                // for now a maximum of 10 books in the cache sounds good.
+                options.SizeLimit = 10;
+            });
+
             builder.Services.Configure<OpenSearchAccessOptions>(builder.Configuration.GetSection("BooksOpenSearchOptions"));
             builder.Services.AddScoped<OpenSearchAccess>();
             builder.Services.AddScoped<EBooksFinder>();
