@@ -73,14 +73,16 @@ The project has two purposes.
 		- builder
 		- and probably a couple more
 			
-	- ASP.NET common ways of working:
+	- C# and ASP.NET common ways of working:
 		- services registration
 		- appsettings
 		- Serilog
 		- PeriodicTimer
+		- string extension methods
 		- Async with cancellationtokens
 		- Exception handling
 		- Components, callbacks etc. in Blazor
+		- A memory cache for preventing unneeded calls to OpenSearch
 		- a bit of bootstrap
 		- etc.
 
