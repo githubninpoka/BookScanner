@@ -2,7 +2,7 @@ using EbookSearch.Web.Components;
 
 using EbooksIndex.ClassLibrary;
 using EbooksIndex.ClassLibrary.DataAccess;
-
+using Microsoft.Extensions.Caching.Memory;
 using Serilog;
 
 namespace EbookSearch.Web
@@ -37,6 +37,7 @@ namespace EbookSearch.Web
             {
                 // for now a maximum of 10 books in the cache sounds good.
                 options.SizeLimit = 10;
+                options.CompactionPercentage = 0.2;
             });
 
             builder.Services.Configure<OpenSearchAccessOptions>(builder.Configuration.GetSection("BooksOpenSearchOptions"));

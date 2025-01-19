@@ -19,7 +19,9 @@ public class EbookRetriever
 
     private readonly ILogger<EbookRetriever> _logger;
     private readonly OpenSearchClient _db;
-    private readonly  IMemoryCache _memoryCache;
+    private readonly IMemoryCache _memoryCache;
+
+    private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
     public EbookRetriever(
         ILogger<EbookRetriever> logger,
@@ -40,17 +42,33 @@ public class EbookRetriever
         }
         else
         {
-            _logger.LogInformation("{var} - {var2} - Serving the book {var3} fresh", nameof(EbookRetriever), nameof(Retrieve), repositoryId);
-            var openSearchResponse = await _db.GetAsync<MatchedEbook>(repositoryId);
-            returnableEbook = openSearchResponse.Source;
-            MemoryCacheEntryOptions cacheOptions = new MemoryCacheEntryOptions()
-                .SetSlidingExpiration(TimeSpan.FromSeconds(600))
-                .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
-                .SetPriority(CacheItemPriority.Normal)
-                .SetSize(1);
-                
-                
-            _memoryCache.Set(repositoryId, returnableEbook, cacheOptions);
+            try
+            {
+                await semaphore.WaitAsync();
+                if (_memoryCache.TryGetValue(repositoryId, out returnableEbook))
+                {
+                    _logger.LogInformation("{var} - {var2} - Serving the book {var3} from cache", nameof(EbookRetriever), nameof(Retrieve), repositoryId);
+                }
+                else
+                {
+                    _logger.LogInformation("{var} - {var2} - Serving the book {var3} fresh", nameof(EbookRetriever), nameof(Retrieve), repositoryId);
+                    // I could have more error handling here, but if this method is called it means that OpenSearch already returned a list of books and is working.
+                    // for now I just let the risk exist.
+                    var openSearchResponse = await _db.GetAsync<MatchedEbook>(repositoryId);
+                    returnableEbook = openSearchResponse.Source;
+                    MemoryCacheEntryOptions cacheOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(600))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal)
+                        .SetSize(1);
+
+                    _memoryCache.Set(repositoryId, returnableEbook, cacheOptions);
+                }
+            }
+            finally
+            {
+                semaphore.Release();
+            }
         }
 
         return returnableEbook;
