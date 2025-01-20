@@ -17,12 +17,12 @@
     <p>
         @thisBook.FileName contains @thisBook.MatchedSnippets.Count matching sections. It cost @(_snippetTime / 1000) seconds to process.
     </p>
-    <div class="position-relative overflow-scroll">
+    <div class="position-relative overflow-auto">
         @for (int i = 0; i < thisBook.MatchedSnippets.Count; i++)
         {
             var currentSnippet = thisBook.MatchedSnippets.ElementAt(i);
             <div class="d-flex flex-column">
-                <div>
+                <div class="pt-sm-3">
                     <span>Match #@(i + 1) of @thisBook.MatchedSnippets.Count  found at character position @currentSnippet.Key (@(Convert.ToInt32(((float)currentSnippet.Key / (float)_bookLength) * 100))  %) in the book.</span>
                 </div>
                 <div class="snippet p-lg-1">@((MarkupString)currentSnippet.Value)</div>
