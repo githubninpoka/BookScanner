@@ -2,6 +2,7 @@ using EbookSearch.Web.Components;
 
 using EbooksIndex.ClassLibrary;
 using EbooksIndex.ClassLibrary.DataAccess;
+using EbooksIndex.ClassLibrary.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
 using Serilog;
 
@@ -44,6 +45,7 @@ namespace EbookSearch.Web
             builder.Services.AddScoped<OpenSearchAccess>();
             builder.Services.AddScoped<EBooksFinder>();
             builder.Services.AddScoped<EbookRetriever>();
+            builder.Services.AddScoped<IRepositoryHelper, RepositoryHelper>();
 
             var app = builder.Build();
 

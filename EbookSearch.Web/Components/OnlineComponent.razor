@@ -1,0 +1,15 @@
+﻿@inject IRepositoryHelper _repository
+<div class="server-status" 
+        style="color:@(online == 0?"grey":(online == 1?"green":(online==2?"yellow":"red")))"
+     title="The library is @(online == 0?"...":(online == 1?"open":(online==2?"opening up":"closed")))">
+    <i class="fa fa-server"></i>
+</div>
+
+@code {
+    private int online = 0; // 0 not checked; 1 online and cluster healthy; 2 online but cluster not sure; 3 other
+
+    protected override async Task OnInitializedAsync()
+    {
+        online = await _repository.GetStatusAsync();
+    }
+}
