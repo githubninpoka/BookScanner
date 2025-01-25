@@ -13,18 +13,18 @@ using System.Threading.Tasks;
 
 namespace EbooksIndex.ClassLibrary;
 
-public class EbookRetriever
+public class EbookRetrieverOpenSearch : IEbookRetriever
 {
     // responsible for instantiating a book with its booktext
 
-    private readonly ILogger<EbookRetriever> _logger;
+    private readonly ILogger<EbookRetrieverOpenSearch> _logger;
     private readonly OpenSearchClient _db;
     private readonly IMemoryCache _memoryCache;
 
     private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
-    public EbookRetriever(
-        ILogger<EbookRetriever> logger,
+    public EbookRetrieverOpenSearch(
+        ILogger<EbookRetrieverOpenSearch> logger,
         OpenSearchAccess openSearchAccess,
         IMemoryCache memoryCache)
     {
@@ -35,10 +35,10 @@ public class EbookRetriever
 
     public async Task<IMatchedEbook?> Retrieve(string repositoryId)
     {
-        _logger.LogInformation("{var} - {var2} - first step in retrieving a document by id", nameof(EbookRetriever), nameof(Retrieve));
+        _logger.LogInformation("{var} - {var2} - first step in retrieving a document by id", nameof(EbookRetrieverOpenSearch), nameof(Retrieve));
         if (_memoryCache.TryGetValue(repositoryId, out MatchedEbook? returnableEbook))
         {
-            _logger.LogInformation("{var} - {var2} - Serving the book {var3} from cache", nameof(EbookRetriever), nameof(Retrieve), repositoryId);
+            _logger.LogInformation("{var} - {var2} - Serving the book {var3} from cache", nameof(EbookRetrieverOpenSearch), nameof(Retrieve), repositoryId);
         }
         else
         {
@@ -47,11 +47,11 @@ public class EbookRetriever
                 await semaphore.WaitAsync();
                 if (_memoryCache.TryGetValue(repositoryId, out returnableEbook))
                 {
-                    _logger.LogInformation("{var} - {var2} - Serving the book {var3} from cache", nameof(EbookRetriever), nameof(Retrieve), repositoryId);
+                    _logger.LogInformation("{var} - {var2} - Serving the book {var3} from cache", nameof(EbookRetrieverOpenSearch), nameof(Retrieve), repositoryId);
                 }
                 else
                 {
-                    _logger.LogInformation("{var} - {var2} - Serving the book {var3} fresh", nameof(EbookRetriever), nameof(Retrieve), repositoryId);
+                    _logger.LogInformation("{var} - {var2} - Serving the book {var3} fresh", nameof(EbookRetrieverOpenSearch), nameof(Retrieve), repositoryId);
                     // I could have more error handling here, but if this method is called it means that OpenSearch already returned a list of books and is working.
                     // for now I just let the risk exist.
                     var openSearchResponse = await _db.GetAsync<MatchedEbook>(repositoryId);

@@ -22,7 +22,7 @@ style="@(_showIntro?"margin-top:5%":"")">
     />
 
     <BookDetailComponent
-    BookOpenSearchId="@_bookOpenSearchId"
+    BookId="@_bookId"
     SearchParameters="@_searchParameters"
     BookOpenStamp="@_bookOpenStamp"
     />
@@ -42,24 +42,24 @@ style="@(_showIntro?"margin-top:5%":"")">
 
     private SearchParameters _searchParameters =new();
 
-    private string _bookOpenSearchId = "";
+    private string _bookId = "";
     private DateTime? _bookOpenStamp = null;
 
     private void InitiateSearch(SearchParameters searchParameters)
     {
-        _bookOpenSearchId = "";
+        _bookId = "";
         _searchParameters = searchParameters;
         _doSearch = true;
         _showIntro = false;
         Logger.LogInformation("Search parameters were set to {var}, so that Components can pick it up", _searchParameters.SingleSearchString);
     }
 
-    private void HandleIncomingBookRequest(string bookOpenSearchId)
+    private void HandleIncomingBookRequest(string bookId)
     {
-        _bookOpenSearchId = bookOpenSearchId;
+        _bookId = bookId;
         _doSearch = false;
         _bookOpenStamp = DateTime.Now;
-        Logger.LogInformation("The Home page received an incoming bookRequest {var} from BookMetaData through BookMetaDataList ", _bookOpenSearchId);
+        Logger.LogInformation("The Home page received an incoming bookRequest {var} from BookMetaData through BookMetaDataList ", _bookId);
         NavigationManager.NavigateTo("#topofbody");
     }
 

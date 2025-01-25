@@ -8,5 +8,5 @@ public interface IEbookMetaData
     string FilePath { get; }
     string FileName { get; }
     string MD5Hash { get; }
-    string OpenSearchId { get; set; }
+    string BookId { get; set; }
 }

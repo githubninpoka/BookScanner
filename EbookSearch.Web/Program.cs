@@ -43,8 +43,8 @@ namespace EbookSearch.Web
 
             builder.Services.Configure<OpenSearchAccessOptions>(builder.Configuration.GetSection("BooksOpenSearchOptions"));
             builder.Services.AddScoped<OpenSearchAccess>();
-            builder.Services.AddScoped<EBooksFinder>();
-            builder.Services.AddScoped<EbookRetriever>();
+            builder.Services.AddScoped<IEbooksFinder, EbooksFinderOpenSearch>();
+            builder.Services.AddScoped<IEbookRetriever, EbookRetrieverOpenSearch>();
             builder.Services.AddScoped<IRepositoryHelper, RepositoryHelper>();
 
             var app = builder.Build();

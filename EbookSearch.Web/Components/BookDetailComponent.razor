@@ -1,9 +1,9 @@
-﻿@inject EbookRetriever EbookRetriever
+﻿@inject IEbookRetriever EbookRetriever
 @inject ILogger<BookDetailComponent> Logger
 @inject NavigationManager NavigationManager
 
 
-@if (!string.IsNullOrWhiteSpace(BookOpenSearchId) && thisBook != null && thisBook.MatchedSnippets.Count > 0)
+@if (!string.IsNullOrWhiteSpace(BookId) && thisBook != null && thisBook.MatchedSnippets.Count > 0)
 {
 
     <div class="position-sticky top-0 m-lg-3 m-sm-1 d-flex align-items-center" style="z-index:1">
@@ -37,9 +37,9 @@ else if (thisBook != null && thisBook.MatchedSnippets.Count == 0)
 
 @code {
     [Parameter]
-    public string BookOpenSearchId { get; set; }
+    public string BookId { get; set; }
 
-    private string _lastBookOpenSearchId = "";
+    private string _lastBookId = "";
 
     [Parameter]
     public SearchParameters SearchParameters { get; set; }
@@ -55,8 +55,8 @@ else if (thisBook != null && thisBook.MatchedSnippets.Count == 0)
 
     private void CloseBook()
     {
-        Logger.LogInformation("{var} - {var2} - Closing book {var3} for searchterm {var4}", nameof(BookDetailComponent), nameof(CloseBook), BookOpenSearchId, SearchParameters.SingleSearchString);
-        BookOpenSearchId = null;
+        Logger.LogInformation("{var} - {var2} - Closing book {var3} for searchterm {var4}", nameof(BookDetailComponent), nameof(CloseBook), BookId, SearchParameters.SingleSearchString);
+        BookId = null;
         NavigationManager.NavigateTo($"#topoflist");
     }
 
@@ -97,9 +97,9 @@ else if (thisBook != null && thisBook.MatchedSnippets.Count == 0)
     {
         Logger.LogInformation("{var} - {var2} called", nameof(BookDetailComponent), nameof(OnParametersSetAsync));
 
-        if (BookOpenSearchId != "" && !string.IsNullOrWhiteSpace(SearchParameters.SingleSearchString))
+        if (BookId != "" && !string.IsNullOrWhiteSpace(SearchParameters.SingleSearchString))
         {
-            if (BookOpenSearchId == _lastBookOpenSearchId && thisBook != null)
+            if (BookId == _lastBookId && thisBook != null)
             {
                 thisBook.FillSnippets(SearchParameters, Logger);
                 Logger.LogInformation("{var} - {var2} - Requesting a new matching of the same book: {var3}", nameof(BookDetailComponent), nameof(OnParametersSetAsync), thisBook.FileName);
@@ -109,10 +109,10 @@ else if (thisBook != null && thisBook.MatchedSnippets.Count == 0)
                 Logger.LogInformation("{var} - {var2}: Conditions for calling OpenSearch are met.", nameof(BookDetailComponent), nameof(OnParametersSetAsync));
                 thisBook = null;
                 var sw = Stopwatch.StartNew();
-                IMatchedEbook oneBook = await EbookRetriever.Retrieve(BookOpenSearchId);
+                IMatchedEbook oneBook = await EbookRetriever.Retrieve(BookId);
                 sw.Stop();
                 _searchTime = sw.ElapsedMilliseconds;
-                _lastBookOpenSearchId = BookOpenSearchId;
+                _lastBookId = BookId;
                 sw.Restart();
                 oneBook.FillSnippets(SearchParameters, Logger);
                 sw.Stop();

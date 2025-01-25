@@ -1,9 +1,9 @@
 ﻿@inject ILogger<BookMetaDataComponent> Logger
 
-@if (BookMeta != null)
+@if (BookMetaData != null)
 {
     <hr />
-    <div class="mb-1 mt-0 pointer bookMetaData" @onclick="@(() => BookCardClicked(BookMeta.OpenSearchId))">
+    <div class="mb-1 mt-0 pointer bookMetaData" @onclick="@(() => BookCardClicked(BookMetaData.BookId))">
         <div class="row">
             <div class="d-none d-sm-block col-sm-1 align-content-center">
                 <i class="fa-solid fa-book fa-2x"></i>
@@ -13,7 +13,7 @@
                     <span class="fs-6 ">@titleToShow</span>
                 </div>
                 <div class="d-inline p-1 metaFilePath">
-                    <span style="font-size:0.6rem">@BookMeta.FilePath</span>
+                    <span style="font-size:0.6rem">@BookMetaData.FilePath</span>
                 </div>
             </div>
         </div>
@@ -22,7 +22,7 @@
 
 @code {
     [Parameter]
-    public IEbookMetaData? BookMeta { get; set; }
+    public IEbookMetaData? BookMetaData { get; set; }
 
     private string? titleToShow;
 
@@ -37,8 +37,8 @@
     }
     protected override async Task OnParametersSetAsync()
     {
-        int extensionMarker = BookMeta.FileName.LastIndexOf('.');
-        titleToShow = BookMeta.FileName.Substring(0, extensionMarker);
+        int extensionMarker = BookMetaData.FileName.LastIndexOf('.');
+        titleToShow = BookMetaData.FileName.Substring(0, extensionMarker);
 
     }
 }

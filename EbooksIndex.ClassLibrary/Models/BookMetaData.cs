@@ -21,6 +21,6 @@ public class BookMetaData : IEbookMetaData
 
     public string? MD5Hash { get; set; }
 
-    // the OpenSearch Id is set separately in the query
-    public string? OpenSearchId { get; set; }
+    // the Id is set separately in the query
+    public string? BookId { get; set; }
 }

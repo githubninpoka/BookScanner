@@ -3,15 +3,17 @@
 
 .snippet {
     background-color: black;
-    /*background-image: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.3));*/
-    background-image: url("images/snippetBackground.jpg");
+    background-image: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.5));
+    /*background-image: url("images/snippetBackground.jpg");*/
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
     position: relative;
     padding:0.3rem;
     color:black;
-    overflow-wrap:anywhere
+    overflow-wrap:anywhere;
+    border-radius:3px;
+    
 }
 
 linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),

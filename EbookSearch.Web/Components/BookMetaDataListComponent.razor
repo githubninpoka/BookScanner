@@ -1,6 +1,6 @@
 ﻿@implements IDisposable
 @inject ILogger<BookMetaDataListComponent> Logger
-@inject EBooksFinder ebooksFinder
+@inject IEbooksFinder ebooksFinder
 
 <div class="position-relative d-flex flex-column p-3 justify-content-center">
     <span id="topoflist"></span>
@@ -10,7 +10,7 @@
             <span class="metalistinfo"> Number of books found: @_numberOfSearchResults and Search took: @_searchTime seconds</span>
                 <div>
                 <Virtualize Items="_ebookMetaDatas" Context="ebook">
-                    <BookMetaDataComponent BookMeta="@ebook"
+                    <BookMetaDataComponent BookMetaData="@ebook"
                     OnBookClicked="@HandleOnBookClicked" />
                 </Virtualize>
             </div>
@@ -50,9 +50,9 @@
     [Parameter]
     public bool DoSearch { get; set; } = true;
 
-    async Task HandleOnBookClicked(string bookOpenSearchId)
+    async Task HandleOnBookClicked(string bookId)
     {
-        await OnBookIdReceived.InvokeAsync(bookOpenSearchId);
+        await OnBookIdReceived.InvokeAsync(bookId);
     }
 
     protected override async Task OnInitializedAsync()
@@ -102,7 +102,7 @@
     {
         if (_ebookMetaDatas is null || _ebookMetaDatas.Count == 0)
         {
-            Logger.LogInformation("{var} - {var2} - Cancelling the search after 6 seconds! Is OpenSearch active?", nameof(BookMetaDataListComponent),nameof(CancelSearch));
+            Logger.LogInformation("{var} - {var2} - Cancelling the search after 6 seconds! Is the repository active?", nameof(BookMetaDataListComponent),nameof(CancelSearch));
             CancellationTokenSource cancellationTokenSource = (CancellationTokenSource)x;
             cancellationTokenSource.Cancel();
         }
