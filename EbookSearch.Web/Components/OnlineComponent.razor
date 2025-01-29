@@ -1,6 +1,11 @@
 ﻿@inject IRepositoryHelper _repository
-<div class="server-status" 
-        style="color:@(online == 0?"grey":(online == 1?"green":(online==2?"yellow":"red")))"
+@inject IJSRuntime JSRuntime
+
+<div class="server-status"
+     style="color:@(online == 0?"grey":(online == 1?"green":(online==2?"yellow":"red")))"
+     data-bs-toggle="serverstatustoggle"
+     data-bs-placement="bottom"
+     data-bs-delay="200"
      title="The library is @(online == 0?"...":(online == 1?"open":(online==2?"opening up":"closed")))">
     <i class="fa fa-server"></i>
 </div>
@@ -11,5 +16,13 @@
     protected override async Task OnInitializedAsync()
     {
         online = await _repository.GetStatusAsync();
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            
+        }
+        await JSRuntime.InvokeVoidAsync("eval", "new bootstrap.Tooltip(document.querySelector('[data-bs-toggle=\"serverstatustoggle\"]'))");
     }
 }

@@ -1,3 +1,4 @@
+
 using EbookSearch.Web.Components;
 
 using EbooksIndex.ClassLibrary;
@@ -33,6 +34,7 @@ namespace EbookSearch.Web
 
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
+
 
             builder.Services.AddMemoryCache(options =>
             {

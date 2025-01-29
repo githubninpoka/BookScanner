@@ -1,7 +1,8 @@
 ﻿@inject ILogger<SearchComponent> _logger
+@inject IJSRuntime JSRuntime
 
 <div class="d-flex position-relative justify-content-center">
-    <div class="d-inline-flex flex-column position-relative justify-content-start" >
+    <div class="d-inline-flex flex-column position-relative justify-content-start">
         <div class="d-inline-flex d-block justify-content-center my-2 w-auto">
             <EditForm Model="SearchParameters" OnValidSubmit="SearchButtonClicked" FormName="SearchForm" class="w-100">
                 <DataAnnotationsValidator />
@@ -50,10 +51,27 @@
             role="switch"
             @bind="SearchParameters.FuzzySearch"
             class="form-check-input" />
-            <label class="form-check-label" for="switchFuzzy">Perform fuzzy search?<br />(Experimental and unreliable..)</label>
+            <label class="form-check-label"
+            for="switchFuzzy">
+                Perform
+                <span id="fuzzy"
+                data-bs-toggle="fuzzytooltip"
+                data-bs-placement="bottom"
+                data-bs-html="true"
+                data-bs-delay="200"
+                title=@fuzzyToolTipTitle>
+                    fuzzy
+                </span>
+                search?
+            </label>
         </div>
+
     </div>
+
+
 </div>
+
+
 
 @code {
     [Parameter]
@@ -63,6 +81,9 @@
     public EventCallback<SearchParameters> OnSearchToBePerformed { get; set; }
 
     private InputText _searchField;
+
+    private string fuzzyToolTipTitle = "<b>Fuzzy means:</b><br>For searchterms shorter than 5 characters, 1 character is allowed to be different. Longer searchterms can have 2 characters changed. <br>This feature is experimental";
+
 
     private void SearchButtonClicked()
     {
@@ -77,6 +98,8 @@
             {
                 await _searchField.Element.Value.FocusAsync();
             }
+            await JSRuntime.InvokeVoidAsync("eval", "new bootstrap.Tooltip(document.querySelector('[data-bs-toggle=\"fuzzytooltip\"]'))");
+
         }
     }
 }

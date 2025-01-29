@@ -63,3 +63,9 @@ h1:focus {
 }
 
 
+/* added tooltip style 2025-01 */
+
+.tooltip-inner {
+    background-color: rgba(50,50,50);
+    color: white;
+}
