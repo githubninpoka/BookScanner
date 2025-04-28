@@ -3,12 +3,12 @@
 @if (BookMetaData != null)
 {
     <hr />
-    <div class="mb-1 mt-0 pointer bookMetaData" @onclick="@(() => BookCardClicked(BookMetaData.BookId))">
+    <div @key="BookMetaData.BookId" class="mb-1 mt-0 pointer bookMetaData" @onclick="@(() => BookCardClicked(BookMetaData.BookId))">
         <div class="row">
             <div class="d-none d-sm-block col-sm-1 align-content-center">
                 <i class="fa-solid fa-book fa-2x"></i>
             </div>
-            <div class="col-sm-11" >
+            <div class="col-sm-11">
                 <div class="p-1 metaTitle">
                     <span class="fs-6 ">@titleToShow</span>
                 </div>
@@ -31,7 +31,7 @@
 
     async Task BookCardClicked(string input)
     {
-        Logger.LogInformation("{var} - {var2} - User selected book card {var3} ",nameof(BookMetaDataComponent),nameof(BookCardClicked), input);
+        Logger.LogInformation("{var} - {var2} - User selected book card {var3} ", nameof(BookMetaDataComponent), nameof(BookCardClicked), input);
         await OnBookClicked.InvokeAsync(input);
 
     }

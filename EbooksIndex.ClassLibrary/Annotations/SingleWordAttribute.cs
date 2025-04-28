@@ -13,6 +13,7 @@ public class SingleWordAttribute : ValidationAttribute
     public override bool IsValid(object? value)
     {
         string pattern = @"\W";
+        pattern = @"[\s,_,\-,\\,"",\{,\},\[,\],\(,\),\/]";
         Match match = Regex.Match(value.ToString(), pattern);
         if (match.Success)
         {

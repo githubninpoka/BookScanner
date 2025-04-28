@@ -9,7 +9,7 @@
         <div class="my-lg-2 my-sm-0">
             <span class="metalistinfo"> Number of books found: @_numberOfSearchResults and Search took: @_searchTime seconds</span>
                 <div>
-                <Virtualize Items="_ebookMetaDatas" Context="ebook">
+                <Virtualize Items="_ebookMetaDatas" Context="ebook" >
                     <BookMetaDataComponent BookMetaData="@ebook"
                     OnBookClicked="@HandleOnBookClicked" />
                 </Virtualize>

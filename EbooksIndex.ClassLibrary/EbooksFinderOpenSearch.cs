@@ -31,7 +31,7 @@ public class EbooksFinderOpenSearch : IEbooksFinder
     }
     public async Task<(int, List<IEbookMetaData>)> FindEBooksAsync(SearchParameters searchParameters, CancellationToken cancellationToken)
     {
-        _logger.LogDebug("{var} - {var2} - first step in find ebooks async method", nameof(EbooksFinderOpenSearch), nameof(FindEBooksAsync));
+        _logger.LogInformation("{var} - {var2} - first step in find ebooks async method - {var3}", nameof(EbooksFinderOpenSearch), nameof(FindEBooksAsync),searchParameters.SingleSearchString);
 
         int querySize = Constants.Constants.OPENSEARCH_MAX_TAKE;
 
