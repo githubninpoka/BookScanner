@@ -47,27 +47,35 @@ public class PdfBook : IEbook
 
     public void Populate()
     {
-        MD5Hash = Md5Functions.ReturnMd5(filePath);
-        using PdfDocument document = PdfDocument.Open(filePath);
-        if (Helpers.MetadataValidator.ValidateAuthor(document.Information.Author))
+        try
         {
-            Author = document.Information.Author;
-        }
-        if (Helpers.MetadataValidator.ValidateTitle(document.Information.Title))
-        {
-            Title = document.Information.Title;
-        }
-        Pages = document.NumberOfPages;
+            MD5Hash = Md5Functions.ReturnMd5(filePath);
+            using PdfDocument document = PdfDocument.Open(filePath);
+            if (Helpers.MetadataValidator.ValidateAuthor(document.Information.Author))
+            {
+                Author = document.Information.Author;
+            }
+            if (Helpers.MetadataValidator.ValidateTitle(document.Information.Title))
+            {
+                Title = document.Information.Title;
+            }
+            Pages = document.NumberOfPages;
 
-        StringBuilder sb = new StringBuilder();
-        foreach(Page page in document.GetPages())
-        {
-            sb.Append(" " + page.Text);
+            StringBuilder sb = new StringBuilder();
+            foreach (Page page in document.GetPages())
+            {
+                sb.Append(" " + page.Text);
+            }
+            BookText = Helpers.StringCleaner.CleanString(sb.ToString());
+            if (BookText == "")
+            {
+                logger.Warning("Check file {var} because its text cannot be found", filePath);
+            }
         }
-        BookText = Helpers.StringCleaner.CleanString(sb.ToString());
-        if (BookText == "")
+        catch (Exception ex)
         {
-            logger.Warning("Check file {var} because its text cannot be found", filePath);
+            logger.Error("Pdf not processed {var}: {var2}", filePath, ex.Message);
+            
         }
     }
 }
