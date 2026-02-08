@@ -50,25 +50,34 @@ public class EpubBook : IEbook
 
     public void Populate()
     {
-        MD5Hash = Md5Functions.ReturnMd5(filePath);
-        using EpubBookRef bookRef = EpubReader.OpenBook(filePath);
-        Title = bookRef.Title;
-        Author = bookRef.Author;
-        IEnumerable<EpubLocalTextContentFileRef> contentReferences = bookRef.GetReadingOrder();
-        StringBuilder stringBuilder = new();
-        foreach (var contentPieceReference in contentReferences)
+
+        try
         {
-            HtmlDocument htmlDocument = new();
-            htmlDocument.LoadHtml(contentPieceReference.ReadContent());
-            foreach (HtmlNode node in htmlDocument.DocumentNode.SelectNodes("//text()"))
+            MD5Hash = Md5Functions.ReturnMd5(filePath);
+            using EpubBookRef bookRef = EpubReader.OpenBook(filePath);
+            Title = bookRef.Title;
+            Author = bookRef.Author;
+            IEnumerable<EpubLocalTextContentFileRef> contentReferences = bookRef.GetReadingOrder();
+            StringBuilder stringBuilder = new();
+            foreach (var contentPieceReference in contentReferences)
             {
-                stringBuilder.AppendLine(node.InnerText.Trim());
+                HtmlDocument htmlDocument = new();
+                htmlDocument.LoadHtml(contentPieceReference.ReadContent());
+                foreach (HtmlNode node in htmlDocument.DocumentNode.SelectNodes("//text()"))
+                {
+                    stringBuilder.AppendLine(node.InnerText.Trim());
+                }
+            }
+            BookText = StringCleaner.CleanString(stringBuilder.ToString());
+            if (BookText == "")
+            {
+                logger.Warning("Check file {var} because its text cannot be found", filePath);
             }
         }
-        BookText = StringCleaner.CleanString(stringBuilder.ToString());
-        if (BookText == "")
+        catch (Exception ex)
         {
-            logger.Warning("Check file {var} because its text cannot be found", filePath);
+            logger.Error("Exception processing {var}: {var2}", filePath, ex.Message);
+            // throw;
         }
     }
 }
