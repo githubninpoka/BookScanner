@@ -19,5 +19,5 @@ public class Constants
     public const int READ_BEFORE_WORDS_FOR_FUZZY_LARGE = 40;
     public const int READ_AHEAD_WORDS_FOR_FUZZY_LARGE = 300;
 
-    public const int OPENSEARCH_MAX_TAKE = 150;
+    public const int OPENSEARCH_MAX_TAKE = 10000;
 }
